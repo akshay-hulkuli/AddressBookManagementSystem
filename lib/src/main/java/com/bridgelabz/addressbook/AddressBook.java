@@ -5,22 +5,25 @@ import java.util.function.Predicate;
 
 public class AddressBook {
 	ArrayList<PersonDetails> referenceBook = new ArrayList<PersonDetails>();
+	public  HashMap<String, ArrayList<PersonDetails>> personsByCity = new HashMap<String, ArrayList<PersonDetails>>();
+	public  HashMap<String, ArrayList<PersonDetails>> personsByState = new HashMap<String, ArrayList<PersonDetails>>();
 	private int numOfContacts = 0;
 	
 	public void addPerson() {
 		System.out.println("Enter Person details:");
 		
 		PersonDetails person = intake();
-		for(int i=0; i< referenceBook.size();i++) {
-			if(person.getFirstName().equals(referenceBook.get(i).getFirstName())) {
-				if(!person.equals(referenceBook.get(i))) {
-					referenceBook.add(person);
-					return;
-				}
-				else System.out.println("Duplicate data entry. discarded");
-			}
+		boolean isDuplicate = referenceBook.stream().anyMatch(contact -> person.equals(contact));
+		if(isDuplicate) {
+			System.out.println("Duplicate data entry. discarded");
 		}
-		referenceBook.add(person);
+		else{
+			referenceBook.add(person);
+			if(personsByCity.get(person.getCity()) == null) personsByCity.put(person.getCity(), new ArrayList<>());
+			personsByCity.get(person.getCity()).add(person);
+			if(personsByState.get(person.getState()) == null) personsByState.put(person.getState(), new ArrayList<>());
+			personsByState.get(person.getState()).add(person);
+		}
 		
 	}
 	
@@ -33,6 +36,16 @@ public class AddressBook {
 	public void searchByState(String state, String firstName) {
 		Predicate<PersonDetails> searchPerson = (contact -> contact.getState().equals(state)&& contact.getFirstName().equals(firstName));
 		referenceBook.stream().filter(searchPerson).forEach(person -> output(person));
+	}
+	
+	public void personsInCity(String city) {
+		ArrayList<PersonDetails> list = personsByCity.get(city);
+		list.stream().forEach(person -> output(person));
+	}
+	
+	public void personsInState(String State) {
+		ArrayList<PersonDetails> list = personsByState.get(State);
+		list.stream().forEach(person -> output(person));
 	}
 	
 	public void editPerson(String name) {
