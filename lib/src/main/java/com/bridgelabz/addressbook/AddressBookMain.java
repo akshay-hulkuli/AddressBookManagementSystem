@@ -14,7 +14,7 @@ public class AddressBookMain {
 		AddressBook currentBook;
 		boolean exit1 = true;
 		while(exit1) {
-			System.out.println("Select option 1:Add address Book 2:open Address Book 3:search by city or state 4:exit");
+			System.out.println("Select option 1:Add address Book 2:open Address Book 3:search by city or state  4 : display users in city or state 5:exit");
 			switch(sc.nextInt()) {
 				case 1: 
 					System.out.println("Enter the address book name");
@@ -58,6 +58,17 @@ public class AddressBookMain {
 						System.out.println("enter firstName");
 						String firstName  = sc.next();
 						addressBookSystem.searchByState(state,firstName);
+					}
+					break;
+				case 4:
+					System.out.println("Select 1: display persons in a city 2: display persons in a state");
+					if(sc.nextInt() == 1) {
+						System.out.println("Enter city name");
+						addressBookSystem.personsInCity(sc.next());
+					}
+					else {
+						System.out.println("Enter state name");
+						addressBookSystem.personsInState(sc.next());
 					}
 					break;
 				default:
