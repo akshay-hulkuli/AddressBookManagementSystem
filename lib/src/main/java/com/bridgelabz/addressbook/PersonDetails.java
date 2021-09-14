@@ -1,3 +1,4 @@
+
 package com.bridgelabz.addressbook;
 
 public class PersonDetails {
@@ -10,6 +11,8 @@ public class PersonDetails {
     private int pinCode;
     private String email;
     
+    
+    //setters
     public void setFirstName(String firstName) {
     	this.firstName = firstName;
     }
@@ -36,6 +39,8 @@ public class PersonDetails {
     }
     
     
+    
+    //getters
     public String getFirstName() {
     	return this.firstName;
     }
@@ -59,6 +64,15 @@ public class PersonDetails {
     }
     public String getEmail() {
     	return this.email;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+    	if(object == this)  return true;
+    	if(!(object instanceof PersonDetails)) return false;
+    	PersonDetails person1 = (PersonDetails) object;
+    	return (this.firstName.equals(person1.firstName)  && this.lastName.equals(person1.lastName) && this.address.equals(person1.address) && this.city.equals(person1.city)
+    			&& this.state.equals(person1.state) && this.phoneNumber.equals(person1.phoneNumber) && this.pinCode == person1.pinCode && this.email.equals(person1.email));
     }
     
 }
