@@ -9,7 +9,7 @@ public class AddressBookSystem {
 		int option = 0;
 		boolean exit = true;
 		while(exit) {
-			System.out.println("Select option 1: add user.  2: edit existing user.  3: display all users  4:Exit");
+			System.out.println("Select option 1: add user.  2: edit existing user.  3: display all users 4:Delete contact. 5:Exit");
 			option  = sc.nextInt();
 			switch(option) {
 				case 1 :
@@ -21,6 +21,10 @@ public class AddressBookSystem {
 					break;
 				case 3:
 					addressBook.display();
+					break;
+				case 4:
+					System.out.println("Enter name");
+					addressBook.deletePerson(sc.next());
 					break;
 				default:
 					exit = false;
