@@ -75,4 +75,10 @@ public class PersonDetails {
     			&& this.state.equals(person1.state) && this.phoneNumber.equals(person1.phoneNumber) && this.pinCode == person1.pinCode && this.email.equals(person1.email));
     }
     
+    @Override
+    public String toString() {
+    	return "firstName: "+this.getFirstName()+", SecondName: "+ this.getLastName()+", Address: "+ this.getAddress() + ", City: "+this.getCity() +", State: "+this.getState()+
+		", Pincode: "+this.getPinCode()+", Phone number: "+this.getPhoneNumber()+", email: "+this.getEmail();
+    }
+    
 }
