@@ -55,4 +55,18 @@ public class AddressBookSystem {
 			addressBooks.get(i).searchByState(state,name);
 		}
 	}
+	
+	public void personsInCity(String city) {
+		System.out.println("Persons in city: "+city);
+		for(int i=0;i<addressBooks.size(); i++) {
+			addressBooks.get(i).personsInCity(city);
+		}
+	}
+	
+	public void personsInState(String State) {
+		System.out.println("Persons in state: "+State);
+		for(int i=0;i<addressBooks.size(); i++) {
+			addressBooks.get(i).personsInState(State);
+		}
+	}
 }
