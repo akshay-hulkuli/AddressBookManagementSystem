@@ -148,4 +148,11 @@ public class AddressBook {
 		System.out.println("email : "+person.getEmail());
 	}
 	
+	
+	public  void sortByFirstName() {
+		referenceBook.stream()
+					 .sorted((contact1,contact2) -> contact1.getFirstName().compareTo(contact2.getFirstName()))
+					 .forEach(System.out::println);
+	}
+	
 }
