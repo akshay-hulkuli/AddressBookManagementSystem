@@ -48,6 +48,14 @@ public class AddressBook {
 		list.stream().forEach(person -> output(person));
 	}
 	
+	public int countByCity(String city) {
+		
+		return (personsByCity.get(city)==null)?0:personsByCity.get(city).size();
+	}
+	public int countByState(String state) {
+		return personsByState.get(state)==null?0:personsByState.get(state).size();
+	}
+	
 	public void editPerson(String name) {
 		int i=0;
 		for(i=0;i<referenceBook.size();i++) {
