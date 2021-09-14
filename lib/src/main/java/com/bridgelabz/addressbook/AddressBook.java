@@ -57,7 +57,22 @@ public class AddressBook {
 		
 	}
 	
-	public static PersonDetails intake() {
+	
+	public void deletePerson(String name) {
+		for(int i=0;i<referenceBook.size();i++) {
+			if(referenceBook.get(i).getFirstName().equals(name)) {
+				referenceBook.remove(i);
+				System.out.println("Deleted details of : "+name);
+				return;
+			}
+		}
+		System.out.println("Name not found");
+	}
+	
+	
+	
+	
+	private static PersonDetails intake() {
 		Scanner sc = new Scanner(System.in);
 		PersonDetails person1 = new PersonDetails();
 		
@@ -80,7 +95,7 @@ public class AddressBook {
 		return person1;
 	}
 	
-	public static void output(PersonDetails person) {
+	private static void output(PersonDetails person) {
 		System.out.println("Enter firstName : "+person.getFirstName());
 		System.out.println("Enter SecondName : "+ person.getLastName());
 		System.out.println("Enter Address : "+ person.getAddress());
