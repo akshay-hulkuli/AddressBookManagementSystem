@@ -3,80 +3,50 @@ package com.bridgelabz.addressbook;
 import java.util.*; 
 
 public class AddressBook {
-	private PersonDetails[] referenceBook = new PersonDetails[20];
+	List<PersonDetails> referenceBook = new LinkedList<PersonDetails>();
 	private int numOfContacts = 0;
 	
 	public void addPerson() {
 		System.out.println("Enter Person details:");
 		
-		Scanner sc = new Scanner(System.in);
-		PersonDetails person1 = new PersonDetails();
-		
-		System.out.println("Enter firstName:");
-		String name = sc.next();
-		for(int i=0; referenceBook[i]!= null;i++) {
-			if(referenceBook[i].getFirstName().equals(name)) {
-				System.out.println("the name is already taken");
-				return;
-			}
+		PersonDetails person = intake();
+		boolean isDuplicate = referenceBook.stream().anyMatch(contact -> person.equals(contact));
+		if(isDuplicate) {
+			System.out.println("Duplicate data entry. discarded");
 		}
-		
-		person1.setFirstName(name);
-		System.out.println("Enter SecondName:");
-		person1.setLastName(sc.next());
-		System.out.println("Enter Address:");
-		person1.setAddress(sc.next());
-		System.out.println("Enter City:");
-		person1.setCity(sc.next());
-		System.out.println("Enter State:");
-		person1.setState(sc.next());
-		System.out.println("Enter Pin code:");
-		person1.setPinCode(sc.nextInt());
-		System.out.println("Enter Phone nmber:");
-		person1.setPhoneNumber(sc.next());
-		System.out.println("Enter email:");
-		person1.setEmail(sc.next());
-		
-		referenceBook[numOfContacts] = person1;
-		numOfContacts++;
+		else{
+			referenceBook.add(person);
+		}
 		
 	}
 	
 	public void editPerson(String name) {
-		PersonDetails person = null ;
-		int i = 0;
-		//Check entered person name
-		while(referenceBook[i]!= null) {
-			if(referenceBook[i].getFirstName().equals(name)) {
-				person = referenceBook[i];
-				break;
-			}
-			i++;
+		int i=0;
+		for(i=0;i<referenceBook.size();i++) {
+			if(name.equals(referenceBook.get(i).getFirstName())) break;
 		}
-		// if name not present return
-		if(person == null) {
-			System.out.println("name not found!");
+		if(i == referenceBook.size()) {
+			System.out.println("name not found");
 			return;
 		}
-		
 		System.out.println("Changing details, Enter new details  of "+name);
-		referenceBook[i] = intake();
+		referenceBook.add(intake());
 	}
 	
 	public void display() {
 		Scanner sc = new Scanner(System.in);
 		PersonDetails person = null; 
 		System.out.println("Persons present in the address book:");
-		for(int i=0; referenceBook[i] != null;i++) {
-			System.out.print(referenceBook[i].getFirstName()+"  ");
+		for(int i=0; i<referenceBook.size();i++) {
+			System.out.print(referenceBook.get(i).getFirstName()+"  ");
 		}
 		System.out.println();
 		System.out.println("Enter name to see details");
 		String name = sc.next();
 		
-		for(int i = 0;referenceBook[i]!= null;i++) {
-			if(referenceBook[i].getFirstName().equals(name)) {
-				person = referenceBook[i];
+		for(int i = 0;i<referenceBook.size();i++) {
+			if(referenceBook.get(i).getFirstName().equals(name)) {
+				person = referenceBook.get(i);
 				break;
 			}
 		}
@@ -92,20 +62,16 @@ public class AddressBook {
 	
 	public void deletePerson(String name) {
 		int i=0;
-		for(i=0;referenceBook[i]!=null;i++) {
-			if(referenceBook[i].getFirstName().equals(name)) {
+		for(i=0;i<referenceBook.size();i++) {
+			if(referenceBook.get(i).getFirstName().equals(name)) {
 				break;
 			}
 		}
 		if(i==numOfContacts) {
-		System.out.println("Name not found");
-		return;
+			System.out.println("Name not found");
+			return;
 		}
-		while(referenceBook[i+1]!= null) {
-			referenceBook[i] = referenceBook[i+1];
-			i++;
-		}
-		referenceBook[i] = null;
+		referenceBook.remove(i);
 		System.out.println("Deleted details of : "+ name);
 	}
 	
