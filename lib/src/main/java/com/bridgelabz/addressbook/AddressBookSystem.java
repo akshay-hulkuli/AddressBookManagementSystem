@@ -1,13 +1,15 @@
 package com.bridgelabz.addressbook;
 
+import java.util.List;
 import java.util.Scanner;
+import java.util.LinkedList;
 public class AddressBookSystem {
-	private static AddressBook[] addressBooks = new AddressBook[10];
+	private static List<AddressBook> addressBooks = new LinkedList<AddressBook>();
 	private static String[] addressBookName = new String[10];
 	private static int  numOfBooks =0;
 	
 	private boolean checkName(String name) {
-		for(int i=0;addressBooks[i]!=null;i++) {
+		for(int i=0;i<addressBooks.size();i++) {
 			if(addressBookName[i].equals(name)) return true;
 		}
 		return false;
@@ -55,7 +57,7 @@ public class AddressBookSystem {
 					System.out.println("Enter the address book name");
 					String name = sc.next();
 					currentBook  = new AddressBook();
-					addressBooks[numOfBooks] = currentBook;
+					addressBooks.add(currentBook);
 					addressBookName[numOfBooks] = name;
 					numOfBooks++;
 					break;
@@ -74,7 +76,7 @@ public class AddressBookSystem {
 						System.out.println("name Not Found");
 						break;
 					}
-					currentBook = addressBooks[i];
+					currentBook = addressBooks.get(i);
 					addressMenu(currentBook);
 					break;
 				default:
