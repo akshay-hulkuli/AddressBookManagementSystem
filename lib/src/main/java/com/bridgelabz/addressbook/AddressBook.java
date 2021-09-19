@@ -1,9 +1,14 @@
 package com.bridgelabz.addressbook;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*; 
 import java.util.function.Predicate;
 
+
 public class AddressBook {
+	public static String FILE_NAME = "AddressBook-file.txt";
 	ArrayList<PersonDetails> referenceBook = new ArrayList<PersonDetails>();
 	public  HashMap<String, ArrayList<PersonDetails>> personsByCity = new HashMap<String, ArrayList<PersonDetails>>();
 	public  HashMap<String, ArrayList<PersonDetails>> personsByState = new HashMap<String, ArrayList<PersonDetails>>();
@@ -25,6 +30,33 @@ public class AddressBook {
 			personsByState.get(person.getState()).add(person);
 		}
 		
+	}
+	
+	public void writeDataToFile() {
+		System.out.print("writing addressBook to a file ");
+		StringBuffer addBuffer = new StringBuffer();
+		referenceBook.forEach(contact -> {
+			String contactDetails = contact.toString().concat("\n");
+			addBuffer.append(contactDetails);
+		});
+		
+		try {
+			Files.write(Paths.get(FILE_NAME),addBuffer.toString().getBytes());
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void readDataFromFile() {
+		System.out.println("Reading address book from the file");
+		try {
+			Files.lines(Paths.get(FILE_NAME))
+				 .map(contact -> contact.trim())
+				 .forEach(contact -> System.out.println(contact));
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
