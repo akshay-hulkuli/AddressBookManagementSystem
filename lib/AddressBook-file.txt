@@ -1,0 +1,2 @@
+firstName: akshay, SecondName: hulkuli, Address: thirthahalli, City: thirthahalli, State: karnataka, Pincode: 577415, Phone number: 1234567899, email: ajdlaskd@gmail.com
+firstName: ankith, SecondName: kumar, Address: bengaluru, City: bengalurur, State: karnataka, Pincode: 560050, Phone number: 7894561239, email: ajsdlaksd@gmail.com
