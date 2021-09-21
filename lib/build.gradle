@@ -30,3 +30,7 @@ dependencies {
 dependencies{
 	compile "com.opencsv:opencsv:4.0" 
 }
+
+dependencies{
+    compile "com.google.code.gson:gson:2.2.+" 
+}
