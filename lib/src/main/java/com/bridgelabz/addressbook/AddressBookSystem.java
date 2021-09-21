@@ -19,18 +19,36 @@ public class AddressBookSystem {
 		int option = 0;
 		boolean exit = true;
 		while(exit) {
-			System.out.println("Select option 1: add user.  2: edit existing user.  3: display all users 4:Delete contact. 5: sortby name 6:write file 7:read file  8:Switch Address Book");
+			System.out.println("Select option 1: add user.  2: edit existing user.  3: display all users 4:Delete contact. 5: sortby name   8:Switch Address Book");
 			option  = sc.nextInt();
 			switch(option) {
 				case 1 :
-					addressBook.addPerson();
+					PersonDetails person = intake(); 
+					System.out.println(" select 1: add to list 2: add to txt file");
+					switch(sc.nextInt()) {
+						case 1:
+							addressBook.addPerson(person, IOService.LIST_DS_IO);
+							break;
+						case 2:
+							addressBook.addPerson(person, IOService.TXT_FILE_IO);
+							break;
+					}
+					
 					break;
 				case 2 :
 					System.out.println("Enter the user name to edit");
 					addressBook.editPerson(sc.next());
 					break;
-				case 3:
-					addressBook.display();
+				case 3: 
+					System.out.println(" select 1: display from list 2: display from txt file");
+					switch(sc.nextInt()) {
+						case 1:
+							addressBook.readData(IOService.LIST_DS_IO);
+							break;
+						case 2:
+							addressBook.readData(IOService.TXT_FILE_IO);
+							break;
+					}
 					break;
 				case 4:
 					System.out.println("Enter name");
@@ -58,12 +76,6 @@ public class AddressBookSystem {
 						default:
 							System.out.println("worng entry");
 					}
-					break;
-				case 6:
-					addressBook.writeDataToFile();
-					break;
-				case 7:
-					addressBook.readDataFromFile();
 					break;
 				default:
 					exit = false;
@@ -112,5 +124,29 @@ public class AddressBookSystem {
 			count+= addressBooks.get(i).countByState(State);
 		}
 		System.out.println("the number person in city : "+State+" is : "+count);
+	}
+	
+	private static PersonDetails intake() {
+		System.out.println("Enter Person details:");
+		Scanner sc = new Scanner(System.in);
+		PersonDetails person1 = new PersonDetails();
+		
+		System.out.println("Enter firstName:");
+		person1.setFirstName(sc.next());
+		System.out.println("Enter SecondName:");
+		person1.setLastName(sc.next());
+		System.out.println("Enter Address:");
+		person1.setAddress(sc.next());
+		System.out.println("Enter City:");
+		person1.setCity(sc.next());
+		System.out.println("Enter State:");
+		person1.setState(sc.next());
+		System.out.println("Enter Pin code:");
+		person1.setPinCode(sc.nextInt());
+		System.out.println("Enter Phone nmber:");
+		person1.setPhoneNumber(sc.next());
+		System.out.println("Enter email:");
+		person1.setEmail(sc.next());
+		return person1;
 	}
 }
