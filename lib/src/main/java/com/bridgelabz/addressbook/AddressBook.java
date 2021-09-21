@@ -9,7 +9,8 @@ import java.util.function.Predicate;
 
 
 public class AddressBook {
-	public static String FILE_NAME = "AddressBook-file.txt";
+	public static String CSV_FILE_NAME = "AddressBook-file.csv";
+	public static String TXT_FILE_NAME = "AddressBook-file.txt";
 	public static ArrayList<PersonDetails> referenceBook; 
 	public  HashMap<String, ArrayList<PersonDetails>> personsByCity = new HashMap<String, ArrayList<PersonDetails>>();
 	public  HashMap<String, ArrayList<PersonDetails>> personsByState = new HashMap<String, ArrayList<PersonDetails>>();
@@ -35,17 +36,13 @@ public class AddressBook {
 			}
 		}
 		else if(type.equals(IOService.TXT_FILE_IO)){
-			System.out.println("writing addressBook to a file ");
-			StringBuffer sb = new StringBuffer();
-			try {
-				Files.lines(Paths.get(FILE_NAME))
-				 	 .map(contact -> contact.trim())
-				 	 .forEach(contact -> sb.append(contact.toString().concat("\n")));
-				sb.append(person.toString());
-				Files.write(Paths.get(FILE_NAME),sb.toString().getBytes());
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
+			TxtFileIOServiceProvider fileIO = new TxtFileIOServiceProvider();
+			fileIO.writeData(person, TXT_FILE_NAME);
+		}
+		
+		else if(type.equals(IOService.CSV_IO)) {
+			OpenCSVServiceProvider csvIO = new OpenCSVServiceProvider();
+			csvIO.writeData(person, CSV_FILE_NAME);
 		}
 		
 	}
@@ -60,17 +57,12 @@ public class AddressBook {
 			});
 		}
 		else if(type.equals(IOService.TXT_FILE_IO)) {
-			try {
-				Files.lines(Paths.get(FILE_NAME))
-					 .map(contact -> contact.trim())
-					 .forEach(contact -> {
-						 System.out.println(contact);
-						 count++;
-					 });
-			}
-			catch(IOException e) {
-				e.printStackTrace();
-			}
+			TxtFileIOServiceProvider fileIO = new TxtFileIOServiceProvider();
+			count  = fileIO.readData(TXT_FILE_NAME);
+		}
+		else if(type.equals(IOService.CSV_IO)) {
+			OpenCSVServiceProvider csvIO = new OpenCSVServiceProvider();
+			count  = csvIO.readData(CSV_FILE_NAME);
 		}
 		return count;
 	}
@@ -221,8 +213,11 @@ public class AddressBook {
 	
 	public static void clearCSV() {
 		try {
-			Files.deleteIfExists(Paths.get(FILE_NAME));
-			File file = new File(FILE_NAME);
+			Files.deleteIfExists(Paths.get(TXT_FILE_NAME));
+			Files.deleteIfExists(Paths.get(CSV_FILE_NAME));
+			File file = new File(TXT_FILE_NAME);
+			file.createNewFile();
+			file = new File(CSV_FILE_NAME);
 			file.createNewFile();
 		}
 		catch(IOException e) {
