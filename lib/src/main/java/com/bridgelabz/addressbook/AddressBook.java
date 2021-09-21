@@ -1,5 +1,6 @@
 package com.bridgelabz.addressbook;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,54 +10,69 @@ import java.util.function.Predicate;
 
 public class AddressBook {
 	public static String FILE_NAME = "AddressBook-file.txt";
-	ArrayList<PersonDetails> referenceBook = new ArrayList<PersonDetails>();
+	public static ArrayList<PersonDetails> referenceBook; 
 	public  HashMap<String, ArrayList<PersonDetails>> personsByCity = new HashMap<String, ArrayList<PersonDetails>>();
 	public  HashMap<String, ArrayList<PersonDetails>> personsByState = new HashMap<String, ArrayList<PersonDetails>>();
 	private int numOfContacts = 0;
+	static long count = 0;
+	public AddressBook() {
+		clearCSV();
+		referenceBook = new ArrayList<PersonDetails>();
+	}
 	
-	public void addPerson() {
-		System.out.println("Enter Person details:");
-		
-		PersonDetails person = intake();
-		boolean isDuplicate = referenceBook.stream().anyMatch(contact -> person.equals(contact));
-		if(isDuplicate) {
-			System.out.println("Duplicate data entry. discarded");
+	public void addPerson(PersonDetails person , IOService type) {
+		if(type.equals(IOService.LIST_DS_IO)) {
+			boolean isDuplicate = referenceBook.stream().anyMatch(contact -> person.equals(contact));
+			if(isDuplicate) {
+				System.out.println("Duplicate data entry. discarded");
+			}
+			else{
+				referenceBook.add(person);
+				if(personsByCity.get(person.getCity()) == null) personsByCity.put(person.getCity(), new ArrayList<>());
+				personsByCity.get(person.getCity()).add(person);
+				if(personsByState.get(person.getState()) == null) personsByState.put(person.getState(), new ArrayList<>());
+				personsByState.get(person.getState()).add(person);
+			}
 		}
-		else{
-			referenceBook.add(person);
-			if(personsByCity.get(person.getCity()) == null) personsByCity.put(person.getCity(), new ArrayList<>());
-			personsByCity.get(person.getCity()).add(person);
-			if(personsByState.get(person.getState()) == null) personsByState.put(person.getState(), new ArrayList<>());
-			personsByState.get(person.getState()).add(person);
+		else if(type.equals(IOService.TXT_FILE_IO)){
+			System.out.println("writing addressBook to a file ");
+			StringBuffer sb = new StringBuffer();
+			try {
+				Files.lines(Paths.get(FILE_NAME))
+				 	 .map(contact -> contact.trim())
+				 	 .forEach(contact -> sb.append(contact.toString().concat("\n")));
+				sb.append(person.toString());
+				Files.write(Paths.get(FILE_NAME),sb.toString().getBytes());
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
 	
-	public void writeDataToFile() {
-		System.out.print("writing addressBook to a file ");
-		StringBuffer addBuffer = new StringBuffer();
-		referenceBook.forEach(contact -> {
-			String contactDetails = contact.toString().concat("\n");
-			addBuffer.append(contactDetails);
-		});
-		
-		try {
-			Files.write(Paths.get(FILE_NAME),addBuffer.toString().getBytes());
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
-	public void readDataFromFile() {
-		System.out.println("Reading address book from the file");
-		try {
-			Files.lines(Paths.get(FILE_NAME))
-				 .map(contact -> contact.trim())
-				 .forEach(contact -> System.out.println(contact));
+	public long readData(IOService type) {
+		count  = 0;
+		if(type.equals(IOService.LIST_DS_IO)) {
+			referenceBook.stream().forEach(contact -> {
+				System.out.println(contact);
+				count++;
+			});
 		}
-		catch(IOException e) {
-			e.printStackTrace();
+		else if(type.equals(IOService.TXT_FILE_IO)) {
+			try {
+				Files.lines(Paths.get(FILE_NAME))
+					 .map(contact -> contact.trim())
+					 .forEach(contact -> {
+						 System.out.println(contact);
+						 count++;
+					 });
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
+		return count;
 	}
 	
 	
@@ -101,7 +117,7 @@ public class AddressBook {
 		referenceBook.add(intake());
 	}
 	
-	public void display() {
+	public static void display() {
 		Scanner sc = new Scanner(System.in);
 		PersonDetails person = null; 
 		System.out.println("Persons present in the address book:");
@@ -200,6 +216,18 @@ public class AddressBook {
 		referenceBook.stream()
 					 .sorted((contact1,contact2) -> contact1.getState().compareTo(contact2.getState()))
 					 .forEach(System.out::println);
+	}
+	
+	
+	public static void clearCSV() {
+		try {
+			Files.deleteIfExists(Paths.get(FILE_NAME));
+			File file = new File(FILE_NAME);
+			file.createNewFile();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
