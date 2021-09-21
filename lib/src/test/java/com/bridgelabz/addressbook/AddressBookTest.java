@@ -74,4 +74,29 @@ public class AddressBookTest {
 		long size  = addressBook.readData(IOService.TXT_FILE_IO);
 		Assert.assertEquals(2,size);
 	}
+	
+	@Test
+	public void givenAContact_WhenAddedToCSVFile_ShouldReturnCorrectSize() {
+		AddressBook addressBook = new AddressBook();	
+		addressBook.addPerson(person1, IOService.CSV_IO);
+		addressBook.addPerson(person2, IOService.CSV_IO);
+		long size = 0;
+		try {
+			size = Files.lines(Paths.get("AddressBook-file.csv")).count();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		Assert.assertEquals(2,size-1);
+	}
+	
+	@Test
+	public void whenCalled_ReadFromCSVMethod_ShouldPrintFile() {
+		AddressBook addressBook = new AddressBook();	
+		addressBook.addPerson(person1, IOService.CSV_IO);
+		addressBook.addPerson(person2, IOService.CSV_IO);
+		long size  = addressBook.readData(IOService.CSV_IO);
+		Assert.assertEquals(2,size);
+	}
+
 }
