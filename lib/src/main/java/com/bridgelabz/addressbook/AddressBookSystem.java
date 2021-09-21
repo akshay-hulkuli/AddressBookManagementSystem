@@ -24,13 +24,16 @@ public class AddressBookSystem {
 			switch(option) {
 				case 1 :
 					PersonDetails person = intake(); 
-					System.out.println(" select 1: add to list 2: add to txt file");
+					System.out.println(" select 1: add to list 2: add to txt file 3: add to csv file");
 					switch(sc.nextInt()) {
 						case 1:
 							addressBook.addPerson(person, IOService.LIST_DS_IO);
 							break;
 						case 2:
 							addressBook.addPerson(person, IOService.TXT_FILE_IO);
+							break;
+						case 3:
+							addressBook.addPerson(person, IOService.CSV_IO);
 							break;
 					}
 					
@@ -40,13 +43,16 @@ public class AddressBookSystem {
 					addressBook.editPerson(sc.next());
 					break;
 				case 3: 
-					System.out.println(" select 1: display from list 2: display from txt file");
+					System.out.println(" select 1: display from list 2: display from txt file 3: display from CSV file");
 					switch(sc.nextInt()) {
 						case 1:
 							addressBook.readData(IOService.LIST_DS_IO);
 							break;
 						case 2:
 							addressBook.readData(IOService.TXT_FILE_IO);
+							break;
+						case 3:
+							addressBook.readData(IOService.CSV_IO);
 							break;
 					}
 					break;
