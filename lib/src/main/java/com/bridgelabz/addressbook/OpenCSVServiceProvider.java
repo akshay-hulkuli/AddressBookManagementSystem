@@ -28,7 +28,7 @@ public class OpenCSVServiceProvider  {
 		
 		    while (csvUserIterator.hasNext()) {
 		    	PersonDetails contact = csvUserIterator.next();
-		    	System.out.println("hey mama" +contact.toString());
+		    	System.out.println(contact.toString());
 		    	contactList.add(contact);
 		    }
 		}
