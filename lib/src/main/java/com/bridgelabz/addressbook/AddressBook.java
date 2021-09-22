@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 
-public class AddressBook {
+public class AddressBook implements AddressBookIF {
 	public static String CSV_FILE_NAME = "AddressBook-file.csv";
 	public static String TXT_FILE_NAME = "AddressBook-file.txt";
 	public static String JSON_FILE_NAME = "AddressBook-file.json";
