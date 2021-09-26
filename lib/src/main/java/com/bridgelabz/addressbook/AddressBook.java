@@ -73,6 +73,12 @@ public class AddressBook implements AddressBookIF {
 			JsonServiceProvider jsonIO = new JsonServiceProvider();
 			count  = jsonIO.readData(JSON_FILE_NAME);
 		}
+		else if(type.equals(IOService.DB_IO)) {
+			AddressBookDBService addressBookDBService = new AddressBookDBService();
+			List<PersonDetails> contactList = addressBookDBService.readData();
+			System.out.println(contactList);
+			return contactList.size();
+		}
 		return count;
 	}
 	
