@@ -1,5 +1,6 @@
 package com.bridgelabz.addressbook;
 
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,8 +21,8 @@ public class AddressBookTest {
 	@Before
 	public void initialize() {
 		person1 = new PersonDetails();
-		person1.setFirstName("akshay");
-		person1.setLastName("hulkuli");
+		person1.setFirstName("arun");
+		person1.setLastName("anand");
 		person1.setAddress("hulkuli");
 		person1.setCity("Thirathalli");
 		person1.setState("karnataka");
@@ -132,6 +133,14 @@ public class AddressBookTest {
 		addressBook.addPerson(person2, IOService.JSON_IO);
 		long size  = addressBook.readData(IOService.JSON_IO);
 		Assert.assertEquals(2,size);
+	}
+	
+	@Test
+	public void givenAddressBookInDB_WhenRetrived_ShouldReturnCount()
+	{
+		AddressBook addressBook = new AddressBook();
+		long count  = addressBook.readData(IOService.DB_IO);
+		Assert.assertEquals(6, count);
 	}
 
 }
