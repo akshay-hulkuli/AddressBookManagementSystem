@@ -142,5 +142,15 @@ public class AddressBookTest {
 		long count  = addressBook.readData(IOService.DB_IO);
 		Assert.assertEquals(6, count);
 	}
+	
+	@Test
+	public void givenAConact_WhenInserted_ShouldGetUpdatedSize()
+	{
+		AddressBook addressBook = new AddressBook();
+		long initialSize  = addressBook.readData(IOService.DB_IO);
+		addressBook.addPerson(person1, IOService.DB_IO);
+		long updatedSize = addressBook.readData(IOService.DB_IO);
+		Assert.assertEquals(initialSize+1, updatedSize);
+	}
 
 }
