@@ -17,9 +17,11 @@ public class AddressBook implements AddressBookIF {
 	public  HashMap<String, ArrayList<PersonDetails>> personsByState = new HashMap<String, ArrayList<PersonDetails>>();
 	private int numOfContacts = 0;
 	static long count = 0;
+	private AddressBookDBService addressBookDBService;
 	public AddressBook() {
 		clearCSV();
 		referenceBook = new ArrayList<PersonDetails>();
+		addressBookDBService = AddressBookDBService.getInstance();
 	}
 	
 	public void addPerson(PersonDetails person , IOService type) {
@@ -49,6 +51,10 @@ public class AddressBook implements AddressBookIF {
 			JsonServiceProvider jsonIO = new JsonServiceProvider();
 			jsonIO.writeData(person,JSON_FILE_NAME );
 		}
+		else if(type.equals(IOService.DB_IO)) {
+			AddressBookDBService databaseIO = addressBookDBService;
+			databaseIO.writeDB(person);
+		}
 		
 	}
 	
@@ -74,8 +80,8 @@ public class AddressBook implements AddressBookIF {
 			count  = jsonIO.readData(JSON_FILE_NAME);
 		}
 		else if(type.equals(IOService.DB_IO)) {
-			AddressBookDBService addressBookDBService = new AddressBookDBService();
-			List<PersonDetails> contactList = addressBookDBService.readData();
+			AddressBookDBService databaseIO = addressBookDBService;
+			List<PersonDetails> contactList = databaseIO.readData();
 			System.out.println(contactList);
 			return contactList.size();
 		}
