@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.google.gson.Gson;
 
@@ -144,7 +145,7 @@ public class AddressBookTest {
 	}
 	
 	@Test
-	public void givenAConact_WhenInserted_ShouldGetUpdatedSize()
+	public void givenAContact_WhenInserted_ShouldGetUpdatedSize()
 	{
 		AddressBook addressBook = new AddressBook();
 		long initialSize  = addressBook.readData(IOService.DB_IO);
@@ -152,5 +153,27 @@ public class AddressBookTest {
 		long updatedSize = addressBook.readData(IOService.DB_IO);
 		Assert.assertEquals(initialSize+1, updatedSize);
 	}
-
+	
+	@Test
+	public void givenACity_WhenQueried_ShouldGetNumberOfContacts()
+	{
+		AddressBook addressBook = new AddressBook();
+		int count  = addressBook.countByCity("Bengaluru", IOService.DB_IO);
+		Assert.assertEquals(2, count);
+	}
+	@Test
+	public void givenAWrongQuery_WhenExecuted_ShouldThrowCustomException()
+	{
+		AddressBookDBService databaseIO = AddressBookDBService.getInstance();
+		String sql = "SELECT * FROM random_table";
+		try {
+			ExpectedException exceptionRule = ExpectedException.none();
+			exceptionRule.expect(AddressBookException.class);
+			databaseIO.demoQuery(sql);
+		}
+		catch( AddressBookException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }
