@@ -7,8 +7,8 @@ public interface AddressBookIF {
 	public void searchByState(String state, String firstName);
 	public void personsInCity(String city);
 	public void personsInState(String State);
-	public int countByCity(String city);
-	public int countByState(String state);
+	public int countByCity(String city, IOService type);
+	public int countByState(String state,IOService type);
 	public void editPerson(String name);
 	public void deletePerson(String name);
 	public  void sortByFirstName();
