@@ -109,11 +109,12 @@ public class AddressBook implements AddressBookIF {
 		list.stream().forEach(person -> output(person));
 	}
 	
-	public int countByCity(String city) {
-		
+	public int countByCity(String city, IOService type) {
+		if(type.equals(IOService.DB_IO))
+			return addressBookDBService.getNumberOfContactsInACity(city);
 		return (personsByCity.get(city)==null)?0:personsByCity.get(city).size();
 	}
-	public int countByState(String state) {
+	public int countByState(String state, IOService type) {
 		return personsByState.get(state)==null?0:personsByState.get(state).size();
 	}
 	
