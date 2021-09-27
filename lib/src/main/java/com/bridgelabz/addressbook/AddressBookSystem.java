@@ -126,14 +126,14 @@ public class AddressBookSystem {
 	public void countByCity(String city) {
 		int count =0;
 		for(int i=0;i<addressBooks.size();i++) {
-			count+= addressBooks.get(i).countByCity(city);
+			count+= addressBooks.get(i).countByCity(city, IOService.LIST_DS_IO);
 		}
 		System.out.println("the number person in city : "+city+" is : "+count);
 	}
 	public void countByState(String State) {
 		int count =0;
 		for(int i=0;i<addressBooks.size();i++) {
-			count+= addressBooks.get(i).countByState(State);
+			count+= addressBooks.get(i).countByState(State,IOService.LIST_DS_IO);
 		}
 		System.out.println("the number person in city : "+State+" is : "+count);
 	}
