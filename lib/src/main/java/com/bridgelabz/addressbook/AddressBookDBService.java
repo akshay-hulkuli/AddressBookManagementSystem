@@ -81,7 +81,47 @@ public class AddressBookDBService {
 		catch(SQLException e) {
 			throw new AddressBookException(AddressBookException.ExceptionType.UPDATE_FAILED, "Can not insert into table");
 		}
-
-		
+	}
+	
+	public int getNumberOfContactsInACity(String city) {
+		int count = 0;
+		if(this.addressBookPreparedStatement == null) {
+			this.prepareStatementForAddressBook();
+		}
+		try {
+			addressBookPreparedStatement.setString(1, "Bengaluru");
+			ResultSet resultSet = addressBookPreparedStatement.executeQuery();
+			while(resultSet.next()) {
+				count = resultSet.getInt("count"); 
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
+		}
+		return count;
+	}
+	
+	private void prepareStatementForAddressBook() {
+		try {
+			Connection connection = this.getConnection();
+			String sqlStatement = "SELECT city,count(*) as 'count' FROM address_book_old WHERE city = ? GROUP BY city;";
+			addressBookPreparedStatement = connection.prepareStatement(sqlStatement);
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void demoQuery(String sql) {
+		try {
+			Connection connection = this.getConnection();
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			connection.close();
+		}
+		catch (SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "cannot execute the query");
+		}
 	}
 }
