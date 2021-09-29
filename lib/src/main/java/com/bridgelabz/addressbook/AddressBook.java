@@ -273,4 +273,11 @@ public class AddressBook implements AddressBookIF {
 		return addressBookDBService.getEmployeeInADateRange(date1,date2);
 	}
 	
+	public HashMap<String, ArrayList<String>> getContactsByCity(String city){
+		return addressBookDBService.getContactsByCity(city);
+	}
+	public HashMap<String, ArrayList<String>> getContactsByState(String state){
+		return addressBookDBService.getContactsByState(state);
+	}
+	
 }
