@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*; 
 import java.util.function.Predicate;
 
@@ -265,6 +266,11 @@ public class AddressBook implements AddressBookIF {
 					 .filter(contact -> contact.getId() == id)
 					 .findFirst()
 					 .orElse(null);
+	}
+
+	public List<PersonDetails> getEmployeeInADateRange(String date1, String date2) {
+		
+		return addressBookDBService.getEmployeeInADateRange(date1,date2);
 	}
 	
 }
