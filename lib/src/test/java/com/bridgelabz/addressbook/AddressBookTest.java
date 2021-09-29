@@ -167,6 +167,14 @@ public class AddressBookTest {
 	}
 	
 	@Test
+	public void givenAAddressBookName_WhenInserted_ShouldReturnOne()
+	{
+		AddressBook addressBook = new AddressBook();
+		int result = addressBook.insertAddressBook("address_book3");
+		Assert.assertTrue(result==1);
+	}
+	
+	@Test
 	public void givenContactIdAndPhonenumber_WhenUpdated_shouldReturnOne()
 	{
 		AddressBook addressBook = new AddressBook();
