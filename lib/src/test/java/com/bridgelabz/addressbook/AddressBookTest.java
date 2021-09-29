@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -164,6 +166,15 @@ public class AddressBookTest {
 		Assert.assertTrue(result);
 	}
 	
+	@Test
+	public void givenDateRange_FindContactsAddedInThatRange_ShouldReturnCount() {
+		AddressBook addressBook = new AddressBook();
+		String date1 = "2019-01-01";
+		String date2 = "2020-09-09";
+		List<PersonDetails> contactList = addressBook.getEmployeeInADateRange(date1,date2);
+		System.out.println(contactList);
+		Assert.assertEquals(3, contactList.size());
+	}
 	@Test
 	public void givenAWrongQuery_WhenExecuted_ShouldThrowCustomException()
 	{
