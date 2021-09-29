@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import com.mysql.jdbc.Connection;
 
@@ -43,26 +44,12 @@ public class AddressBookDBService {
 	
 	public List<PersonDetails> readData() {
 		String sql = "SELECT * FROM address a , contacts c WHERE a.contact_id = c.contact_id";
-		HashMap<Integer, HashMap<String,ArrayList<String>>> contactMap = getContactMap(); 
-		System.out.println(contactMap);
 		List<PersonDetails> contactList = new ArrayList<>();
 		try {
 			Connection connection = this.getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(sql);
-			while(result.next()) {
-				PersonDetails person  = new PersonDetails();
-				person.setFirstName(result.getString("firstName"));
-				person.setLastName(result.getString("lastName"));
-				person.setAddress(result.getString("address"));
-				person.setCity(result.getString("city"));
-				person.setState(result.getString("state"));
-				person.setPinCode(result.getInt("zip"));
-				person.setPhoneNumber(result.getString("phoneNumber"));
-				person.setEmail(result.getString("email"));
-				person.setAddressBookNameTypeMap(contactMap.get(result.getInt("contact_id")));
-				contactList.add(person);
-			}
+			contactList = getAddressBookData(result);
 			connection.close();
 		}
 		catch(SQLException e) {
@@ -137,17 +124,15 @@ public class AddressBookDBService {
 		}
 	}
 	
-	public int getNumberOfContactsInACity(String city) {
+	public int updatePhonenumberOfContact(String phoneNumber, int id) {
 		int count = 0;
 		if(this.addressBookPreparedStatement == null) {
 			this.prepareStatementForAddressBook();
 		}
 		try {
-			addressBookPreparedStatement.setString(1, "Bengaluru");
-			ResultSet resultSet = addressBookPreparedStatement.executeQuery();
-			while(resultSet.next()) {
-				count = resultSet.getInt("count"); 
-			}
+			addressBookPreparedStatement.setString(1, phoneNumber);
+			addressBookPreparedStatement.setInt(2, id);
+			count = addressBookPreparedStatement.executeUpdate();
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
@@ -159,12 +144,54 @@ public class AddressBookDBService {
 	private void prepareStatementForAddressBook() {
 		try {
 			Connection connection = this.getConnection();
-			String sqlStatement = "SELECT city,count(*) as 'count' FROM address_book_old WHERE city = ? GROUP BY city;";
+			String sqlStatement = "update contacts set phoneNumber = ? where contact_id = ?;";
 			addressBookPreparedStatement = connection.prepareStatement(sqlStatement);
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public List<PersonDetails> getAddressBookData(int id ){
+		String sql = String.format("SELECT * FROM address a , contacts c WHERE a.contact_id = c.contact_id and c.contact_id = %d",id);
+		List<PersonDetails> contactList = null;
+		try {
+			Connection connection = this.getConnection();
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			contactList = getAddressBookData(result);
+			connection.close();
+		}
+		catch(SQLException e){
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
+		}
+		return contactList;
+	}
+	
+	public List<PersonDetails> getAddressBookData(ResultSet result){
+		
+		HashMap<Integer, HashMap<String,ArrayList<String>>> contactMap = getContactMap(); 
+		List<PersonDetails> contactList = new ArrayList<>();
+		try {
+			while(result.next()) {
+				PersonDetails person  = new PersonDetails();
+				person.setId(result.getInt("contact_id"));
+				person.setFirstName(result.getString("firstName"));
+				person.setLastName(result.getString("lastName"));
+				person.setAddress(result.getString("address"));
+				person.setCity(result.getString("city"));
+				person.setState(result.getString("state"));
+				person.setPinCode(result.getInt("zip"));
+				person.setPhoneNumber(result.getString("phoneNumber"));
+				person.setEmail(result.getString("email"));
+				person.setAddressBookNameTypeMap(contactMap.get(result.getInt("contact_id")));
+				contactList.add(person);
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return contactList;
 	}
 	
 	public void demoQuery(String sql) {
