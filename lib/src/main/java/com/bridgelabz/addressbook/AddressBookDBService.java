@@ -359,4 +359,17 @@ public class AddressBookDBService {
 		}
 		return contactsBycity;
 	}
+	
+	public int insertAddressBook(String name) {
+		int result = 0;
+		String sql = String.format("insert into address_book (addressBook_name) values('%s');",name);
+		try(Connection connection = this.getConnection()){
+			Statement statement = connection.createStatement();
+			result = statement.executeUpdate(sql); 
+		}
+		catch(SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "cannot execute the query");
+		}
+		return result;
+	}
 }
