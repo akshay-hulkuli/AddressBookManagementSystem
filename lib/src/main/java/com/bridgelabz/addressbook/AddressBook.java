@@ -81,9 +81,9 @@ public class AddressBook implements AddressBookIF {
 		}
 		else if(type.equals(IOService.DB_IO)) {
 			AddressBookDBService databaseIO = addressBookDBService;
-			List<PersonDetails> contactList = databaseIO.readData();
-			System.out.println(contactList);
-			return contactList.size();
+			referenceBook = (ArrayList<PersonDetails>) databaseIO.readData();
+			System.out.println(referenceBook);
+			return referenceBook.size();
 		}
 		return count;
 	}
@@ -110,8 +110,6 @@ public class AddressBook implements AddressBookIF {
 	}
 	
 	public int countByCity(String city, IOService type) {
-		if(type.equals(IOService.DB_IO))
-			return addressBookDBService.getNumberOfContactsInACity(city);
 		return (personsByCity.get(city)==null)?0:personsByCity.get(city).size();
 	}
 	public int countByState(String state, IOService type) {
@@ -248,6 +246,25 @@ public class AddressBook implements AddressBookIF {
 		catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void updatePhonenumberOfContact(String phoneNumber, int id) {
+		int result =  addressBookDBService.updatePhonenumberOfContact(phoneNumber, id);
+		if( result == 0) return;
+		PersonDetails contact = this.getPersonDetailsData(id);
+		if( contact != null) contact.setPhoneNumber(phoneNumber);
+	}
+	public boolean checkAddressBookInsyncWithDB(int id) {
+		List<PersonDetails> employeePayrollDataList =  addressBookDBService.getAddressBookData(id);
+		return employeePayrollDataList.get(0).equals(getPersonDetailsData(id));
+	}
+	
+	private PersonDetails getPersonDetailsData(int id) {
+		return referenceBook.stream()
+					 .filter(contact -> contact.getId() == id)
+					 .findFirst()
+					 .orElse(null);
 	}
 	
 }
