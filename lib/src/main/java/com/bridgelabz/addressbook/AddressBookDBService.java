@@ -5,11 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.mysql.jdbc.Connection;
 
 public class AddressBookDBService {
@@ -110,20 +112,111 @@ public class AddressBookDBService {
 		return contactMap;
 	}
 	
-	
-	public void writeDB(PersonDetails contact) {
-		String sql = String.format("INSERT INTO address_book_old(firstName, lastName, address, city, state, zip, phoneNumber, email)VALUES"
-				+ "('%s','%s','%s','%s','%s','%d','%s','%s')",contact.getFirstName(),contact.getLastName(),contact.getAddress(),contact.getCity(),contact.getState(),
-				contact.getPinCode(),contact.getPhoneNumber(),contact.getEmail());
-		try {
-			Connection connection = this.getConnection();
+	private HashSet<String> getAddressBooks(){
+		HashSet<String> addressBooks = new HashSet<>();
+		try(Connection connection= this.getConnection();){
+			String sql = "select * from address_book";
 			Statement statement = connection.createStatement();
-			int result = statement.executeUpdate(sql);
-			connection.close();
+			ResultSet result = statement.executeQuery(sql);
+			while(result.next()) {
+				addressBooks.add(result.getString(1));
+			}
 		}
-		catch(SQLException e) {
-			throw new AddressBookException(AddressBookException.ExceptionType.UPDATE_FAILED, "Can not insert into table");
+		catch (SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
 		}
+		return addressBooks;
+	}
+	
+	public PersonDetails writeDB(PersonDetails contact) {
+		int contact_id  = -1;
+		Connection connection = null;
+		try {
+			connection = this.getConnection();
+			connection.setAutoCommit(false);
+		}
+		catch(Exception e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.FAILED_TO_CONNECT, "Connection failed");
+		}
+		
+		HashSet<String> addressBooks = getAddressBooks();
+		
+		for(Map.Entry<String, ArrayList<String>> entry : contact.getAddressBookNameTypeMap().entrySet()) {
+			if(!addressBooks.contains(entry.getKey())) 
+				throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "The addressBook : "+entry.getKey()+" is not present");
+		}
+		
+		try(Statement statement = connection.createStatement()){
+			String sql = String.format("insert into contacts(firstName, lastName, phoneNumber, email, date_added) values ('%s','%s','%s','%s','%s');", contact.getFirstName(),contact.getLastName()
+					,contact.getPhoneNumber(),contact.getEmail(),contact.getDateAdded().toString());
+			int result = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
+			if(result == 1) {
+				ResultSet resultSet = statement.getGeneratedKeys();
+				if(resultSet.next()) contact_id = resultSet.getInt(1);
+			}
+		} 
+		catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
+		}
+		try(Statement statement = connection.createStatement()){
+			String sql = String.format("insert into address(contact_id,address,city,state,zip) values (%d,'%s','%s','%s','%d');", contact_id,contact.getAddress()
+					,contact.getCity(),contact.getState(),contact.getPinCode());
+			int result = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
+		} 
+		catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
+		}
+		
+		boolean success = true;
+		
+		for(Map.Entry<String, ArrayList<String>> entry : contact.getAddressBookNameTypeMap().entrySet()) {
+			String addressBook_name = entry.getKey();
+			for(String type : entry.getValue()) {
+				try(Statement statement = connection.createStatement()){
+					String sql = String.format("insert into addressBook_type(addressBook_name,addressBook_type,contact_id) values ('%s','%s',%d);", 
+						addressBook_name,type,contact_id);
+					int result = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
+					if(result != 1) success = false;
+				} 
+				catch (SQLException e) {
+					e.printStackTrace();
+					try {
+						connection.rollback();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+					throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
+				}
+			}
+		}
+		if(success) {
+			contact.setId(contact_id);
+		}
+		
+		try {
+			connection.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if(connection != null)
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		return contact;
 	}
 	
 	public int updatePhonenumberOfContact(String phoneNumber, int id) {
@@ -186,7 +279,7 @@ public class AddressBookDBService {
 				person.setPinCode(result.getInt("zip"));
 				person.setPhoneNumber(result.getString("phoneNumber"));
 				person.setEmail(result.getString("email"));
-				person.setDate_added(result.getDate("date_added").toLocalDate());
+				person.setDateAdded(result.getDate("date_added").toLocalDate());
 				person.setAddressBookNameTypeMap(contactMap.get(result.getInt("contact_id")));
 				contactList.add(person);
 			}
