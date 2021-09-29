@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import com.mysql.jdbc.Connection;
 
 public class AddressBookDBService {
 	
+	private static final String Connection = null;
 	private PreparedStatement addressBookPreparedStatement;
 	private static AddressBookDBService addressBookDBService;
 	private AddressBookDBService() {}
@@ -184,6 +186,7 @@ public class AddressBookDBService {
 				person.setPinCode(result.getInt("zip"));
 				person.setPhoneNumber(result.getString("phoneNumber"));
 				person.setEmail(result.getString("email"));
+				person.setDate_added(result.getDate("date_added").toLocalDate());
 				person.setAddressBookNameTypeMap(contactMap.get(result.getInt("contact_id")));
 				contactList.add(person);
 			}
@@ -204,5 +207,21 @@ public class AddressBookDBService {
 		catch (SQLException e) {
 			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "cannot execute the query");
 		}
+	}
+	
+	public List<PersonDetails> getEmployeeInADateRange(String date1, String date2){
+		String sql = String.format("select * from contacts c , address a where c.contact_id = a.contact_id and date_added between cast('%s' as date) and "
+				+ "cast('%s' as date);",date1,date2);
+		List<PersonDetails> contactList = new ArrayList<>();
+		try(Connection connection = this.getConnection();){
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			contactList = getAddressBookData(resultSet);
+		}
+		catch(SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "cannot execute the query");
+		}
+		
+		return contactList;
 	}
 }
