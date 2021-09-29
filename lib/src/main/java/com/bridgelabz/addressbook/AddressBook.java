@@ -54,7 +54,7 @@ public class AddressBook implements AddressBookIF {
 		}
 		else if(type.equals(IOService.DB_IO)) {
 			AddressBookDBService databaseIO = addressBookDBService;
-			databaseIO.writeDB(person);
+			referenceBook.add(databaseIO.writeDB(person));
 		}
 		
 	}
@@ -278,6 +278,10 @@ public class AddressBook implements AddressBookIF {
 	}
 	public HashMap<String, ArrayList<String>> getContactsByState(String state){
 		return addressBookDBService.getContactsByState(state);
+	}
+	
+	public int insertAddressBook(String name) {
+		return addressBookDBService.insertAddressBook(name);
 	}
 	
 }
