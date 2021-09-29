@@ -224,4 +224,46 @@ public class AddressBookDBService {
 		
 		return contactList;
 	}
+	
+	public HashMap<String, ArrayList<String>> getContactsByCity(String city){
+		String sql = String.format("SELECT a.addressBook_name, firstName FROM address_book a JOIN addressBook_type t ON "
+				+ "a.addressBook_name = t.addressBook_name JOIN contacts c ON c.contact_id = t.contact_id JOIN address ad ON "
+				+ "ad.contact_id = c.contact_id WHERE city = '%s'",city);
+		HashMap<String, ArrayList<String>> contactsBycity = new HashMap<>();
+		try(Connection connection = this.getConnection()){
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while(resultSet.next()) {
+				String addressBook_name  = resultSet.getString(1);
+				if(contactsBycity.get(addressBook_name) == null) contactsBycity.put(addressBook_name, new ArrayList<>());
+				String firstName  = resultSet.getString(2);
+				contactsBycity.get(addressBook_name).add(firstName);
+			}
+		}
+		catch(SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "cannot execute the query");
+		}
+		return contactsBycity;
+	}
+	
+	public HashMap<String, ArrayList<String>> getContactsByState(String state){
+		String sql = String.format("SELECT a.addressBook_name, firstName FROM address_book a JOIN addressBook_type t ON "
+				+ "a.addressBook_name = t.addressBook_name JOIN contacts c ON c.contact_id = t.contact_id JOIN address ad ON "
+				+ "ad.contact_id = c.contact_id WHERE state = '%s'",state);
+		HashMap<String, ArrayList<String>> contactsBycity = new HashMap<>();
+		try(Connection connection = this.getConnection()){
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while(resultSet.next()) {
+				String addressBook_name  = resultSet.getString(1);
+				if(contactsBycity.get(addressBook_name) == null) contactsBycity.put(addressBook_name, new ArrayList<>());
+				String firstName  = resultSet.getString(2);
+				contactsBycity.get(addressBook_name).add(firstName);
+			}
+		}
+		catch(SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "cannot execute the query");
+		}
+		return contactsBycity;
+	}
 }
