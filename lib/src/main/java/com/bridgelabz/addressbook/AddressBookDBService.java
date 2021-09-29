@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import com.mysql.jdbc.Connection;
 
@@ -41,7 +42,9 @@ public class AddressBookDBService {
 	}
 	
 	public List<PersonDetails> readData() {
-		String sql = "SELECT * FROM address_book_old";
+		String sql = "SELECT * FROM address a , contacts c WHERE a.contact_id = c.contact_id";
+		HashMap<Integer, HashMap<String,ArrayList<String>>> contactMap = getContactMap(); 
+		System.out.println(contactMap);
 		List<PersonDetails> contactList = new ArrayList<>();
 		try {
 			Connection connection = this.getConnection();
@@ -57,6 +60,7 @@ public class AddressBookDBService {
 				person.setPinCode(result.getInt("zip"));
 				person.setPhoneNumber(result.getString("phoneNumber"));
 				person.setEmail(result.getString("email"));
+				person.setAddressBookNameTypeMap(contactMap.get(result.getInt("contact_id")));
 				contactList.add(person);
 			}
 			connection.close();
@@ -65,6 +69,56 @@ public class AddressBookDBService {
 			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
 		}
 		return contactList;
+	}
+	
+	private HashMap<Integer, HashMap<String,ArrayList<String>>> getContactMap(){
+		
+		HashMap<Integer, HashMap<String,ArrayList<String>>> contactMap = new HashMap<>();
+		Connection connection= null;
+		try {
+			connection = this.getConnection();
+		}
+		catch(Exception e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.FAILED_TO_CONNECT, "Can not connect to the database");
+		}
+		try(Statement statement = connection.createStatement();){
+			String sql = "SELECT contact_id FROM contacts";
+			ResultSet result = statement.executeQuery(sql);
+			while(result.next()) {
+				contactMap.put(result.getInt(1),new HashMap<>());
+			}
+		}
+		catch(SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
+		}
+		try(Statement statement = connection.createStatement();){
+			String sql = "SELECT * from addressBook_type";
+			ResultSet result = statement.executeQuery(sql);
+			while(result.next()) {
+				contactMap.get(result.getInt(3)).put(result.getString(1), new ArrayList<>());
+			}
+		}
+		catch(SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
+		}
+		try(Statement statement = connection.createStatement();){
+			String sql = "SELECT * from addressBook_type";
+			ResultSet result = statement.executeQuery(sql);
+			while(result.next()) {
+				contactMap.get(result.getInt(3)).get(result.getString(1)).add(result.getString(2));
+			}
+		}
+		catch(SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Failed to execute query");
+		}
+		finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return contactMap;
 	}
 	
 	
