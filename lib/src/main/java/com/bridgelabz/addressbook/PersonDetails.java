@@ -1,6 +1,7 @@
 
 package com.bridgelabz.addressbook;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,6 +26,7 @@ public class PersonDetails {
 	@CsvBindByName
     private String email;
     private HashMap<String, ArrayList<String>> addressBookNameTypeMap = null;
+    private LocalDate date_added;
     
     //setters
     public void setFirstName(String firstName) {
@@ -106,6 +108,12 @@ public class PersonDetails {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	public LocalDate getDate_added() {
+		return date_added;
+	}
+	public void setDate_added(LocalDate date_added) {
+		this.date_added = date_added;
 	}
     
 }
