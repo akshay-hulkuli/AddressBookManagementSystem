@@ -56,7 +56,6 @@ public class AddressBook implements AddressBookIF {
 			AddressBookDBService databaseIO = addressBookDBService;
 			referenceBook.add(databaseIO.writeDB(person));
 		}
-		
 	}
 	
 	
