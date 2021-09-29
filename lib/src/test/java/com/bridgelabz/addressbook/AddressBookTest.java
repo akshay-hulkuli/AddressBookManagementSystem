@@ -155,12 +155,15 @@ public class AddressBookTest {
 	}
 	
 	@Test
-	public void givenACity_WhenQueried_ShouldGetNumberOfContacts()
+	public void givenContactIdAndPhonenumber_WhenUpdated_shouldReturnOne()
 	{
 		AddressBook addressBook = new AddressBook();
-		int count  = addressBook.countByCity("Bengaluru", IOService.DB_IO);
-		Assert.assertEquals(2, count);
+		addressBook.readData(IOService.DB_IO);
+		addressBook.updatePhonenumberOfContact("9874561236", 1);
+		boolean result = addressBook.checkAddressBookInsyncWithDB(1);
+		Assert.assertTrue(result);
 	}
+	
 	@Test
 	public void givenAWrongQuery_WhenExecuted_ShouldThrowCustomException()
 	{
