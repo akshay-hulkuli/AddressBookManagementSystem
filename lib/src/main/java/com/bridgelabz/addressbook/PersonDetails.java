@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.opencsv.bean.CsvBindByName;
 
 public class PersonDetails {
+	private int id;
 	@CsvBindByName
     private String firstName;
 	@CsvBindByName
@@ -99,6 +100,12 @@ public class PersonDetails {
 	}
 	public void setAddressBookNameTypeMap(HashMap<String, ArrayList<String>> addressBookNameTypeMap) {
 		this.addressBookNameTypeMap = addressBookNameTypeMap;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
     
 }
