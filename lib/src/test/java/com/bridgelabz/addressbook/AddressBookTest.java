@@ -8,7 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Assert;
@@ -175,6 +177,23 @@ public class AddressBookTest {
 		System.out.println(contactList);
 		Assert.assertEquals(3, contactList.size());
 	}
+	
+	@Test
+	public void givenCity_FindContactsInThatCity_ShouldReturnCount() {
+		AddressBook addressBook = new AddressBook();
+		HashMap<String,ArrayList<String>> contactsByAddressBook = addressBook.getContactsByCity("Bengaluru");
+		System.out.println(contactsByAddressBook);
+		Assert.assertEquals(2, contactsByAddressBook.get("address_book1").size());
+	}
+	
+	@Test
+	public void givenState_FindContactsInThatState_ShouldReturnCount() {
+		AddressBook addressBook = new AddressBook();
+		HashMap<String,ArrayList<String>> contactsByAddressBook = addressBook.getContactsByState("Maharashtra");
+		System.out.println(contactsByAddressBook);
+		Assert.assertEquals(2, (contactsByAddressBook.get("address_book1").size()+contactsByAddressBook.get("address_book2").size()));
+	}
+	
 	@Test
 	public void givenAWrongQuery_WhenExecuted_ShouldThrowCustomException()
 	{
