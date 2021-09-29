@@ -34,6 +34,14 @@ public class AddressBookTest {
 		person1.setPinCode(577415);
 		person1.setPhoneNumber("6352417895");
 		person1.setEmail("akshay@gmail.com");
+		HashMap<String,ArrayList<String>> nameTypeMap = new HashMap<String, ArrayList<String>>();
+		nameTypeMap.put("address_book2", new ArrayList<String>(Arrays.asList("family")));
+		nameTypeMap.put("address_book1", new ArrayList<String>(Arrays.asList("profession")));
+		person1.setAddressBookNameTypeMap(nameTypeMap);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+		String date = "16/08/2019";
+		LocalDate date_added = LocalDate.parse(date, formatter);
+		person1.setDateAdded(date_added);
 		
 		person2 = new PersonDetails();
 		person2.setFirstName("ankith");
