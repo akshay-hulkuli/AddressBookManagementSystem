@@ -1,6 +1,9 @@
 
 package com.bridgelabz.addressbook;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.opencsv.bean.CsvBindByName;
 
 public class PersonDetails {
@@ -20,7 +23,7 @@ public class PersonDetails {
     private int pinCode;
 	@CsvBindByName
     private String email;
-    
+    private HashMap<String, ArrayList<String>> addressBookNameTypeMap = null;
     
     //setters
     public void setFirstName(String firstName) {
@@ -88,7 +91,14 @@ public class PersonDetails {
     @Override
     public String toString() {
     	return "firstName: "+this.getFirstName()+", SecondName: "+ this.getLastName()+", Address: "+ this.getAddress() + ", City: "+this.getCity() +", State: "+this.getState()+
-		", Pincode: "+this.getPinCode()+", Phone number: "+this.getPhoneNumber()+", email: "+this.getEmail();
+		", Pincode: "+this.getPinCode()+", Phone number: "+this.getPhoneNumber()+", email: "+this.getEmail()+
+		((addressBookNameTypeMap == null)?("\n"):(" addressBook name and types: "+this.addressBookNameTypeMap)+ "\n");
     }
+	public HashMap<String, ArrayList<String>> getAddressBookNameTypeMap() {
+		return addressBookNameTypeMap;
+	}
+	public void setAddressBookNameTypeMap(HashMap<String, ArrayList<String>> addressBookNameTypeMap) {
+		this.addressBookNameTypeMap = addressBookNameTypeMap;
+	}
     
 }
