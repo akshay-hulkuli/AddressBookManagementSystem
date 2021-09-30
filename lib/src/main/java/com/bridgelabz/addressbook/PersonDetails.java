@@ -25,8 +25,24 @@ public class PersonDetails {
     private int pinCode;
 	@CsvBindByName
     private String email;
-    private HashMap<String, ArrayList<String>> addressBookNameTypeMap = null;
+	HashMap<String, ArrayList<String>> addressBookNameTypeMap = null;
     private LocalDate dateAdded;
+    
+    public PersonDetails() {}
+    
+    public PersonDetails( Contacts contact, Address address, HashMap<String, ArrayList<String>> addressBookNameTypeMap) {
+    	this.id = contact.getContactId();
+    	this.firstName = contact.getFirstName();
+    	this.lastName = contact.getLastName();
+    	this.address = address.getAddress();
+    	this.city = address.getCity();
+    	this.state = address.getState();
+    	this.phoneNumber = contact.getPhoneNumber();
+    	this.pinCode = address.getPinCode();
+    	this.email = contact.getEmail();
+    	this.dateAdded = contact.getDateAdded();
+    	this.addressBookNameTypeMap = addressBookNameTypeMap;
+    }
     
     //setters
     public void setFirstName(String firstName) {
