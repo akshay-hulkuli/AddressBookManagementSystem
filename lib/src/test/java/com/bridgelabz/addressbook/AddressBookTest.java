@@ -23,25 +23,34 @@ import com.google.gson.Gson;
 public class AddressBookTest {
 	PersonDetails person1;
 	PersonDetails person2;
+	Contacts contact;
+	Address address;
 	@Before
 	public void initialize() {
-		person1 = new PersonDetails();
-		person1.setFirstName("arun");
-		person1.setLastName("anand");
-		person1.setAddress("hulkuli");
-		person1.setCity("Thirathalli");
-		person1.setState("karnataka");
-		person1.setPinCode(577415);
-		person1.setPhoneNumber("6352417895");
-		person1.setEmail("akshay@gmail.com");
-		HashMap<String,ArrayList<String>> nameTypeMap = new HashMap<String, ArrayList<String>>();
-		nameTypeMap.put("address_book2", new ArrayList<String>(Arrays.asList("family")));
-		nameTypeMap.put("address_book1", new ArrayList<String>(Arrays.asList("profession")));
-		person1.setAddressBookNameTypeMap(nameTypeMap);
+		
+		contact = new Contacts();
+		contact.setFirstName("arun");
+		contact.setLastName("anand");
+		contact.setPhoneNumber("6352417895");
+		contact.setEmail("akshay@gmail.com");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 		String date = "16/08/2019";
 		LocalDate date_added = LocalDate.parse(date, formatter);
-		person1.setDateAdded(date_added);
+		contact.setDateAdded(date_added);
+		
+		address = new Address();
+		address.setAddress("hulkuli");
+		address.setCity("Thirathalli");
+		address.setState("karnataka");
+		address.setPinCode(577415);
+		
+		HashMap<String,ArrayList<String>> nameTypeMap = new HashMap<String, ArrayList<String>>();
+		nameTypeMap.put("address_book2", new ArrayList<String>(Arrays.asList("family")));
+		nameTypeMap.put("address_book1", new ArrayList<String>(Arrays.asList("profession")));
+		
+		person1 = new PersonDetails(contact, address, nameTypeMap);
+		
+		
 		
 		person2 = new PersonDetails();
 		person2.setFirstName("ankith");
@@ -179,7 +188,7 @@ public class AddressBookTest {
 	{
 		AddressBook addressBook = new AddressBook();
 		addressBook.readData(IOService.DB_IO);
-		addressBook.updatePhonenumberOfContact("9874561236", 1);
+		addressBook.updatePhonenumberOfContact("9823561236", 1);
 		boolean result = addressBook.checkAddressBookInsyncWithDB(1);
 		Assert.assertTrue(result);
 	}
