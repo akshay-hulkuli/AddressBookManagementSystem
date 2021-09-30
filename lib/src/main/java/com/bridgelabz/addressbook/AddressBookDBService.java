@@ -141,9 +141,13 @@ public class AddressBookDBService {
 		
 		HashSet<String> addressBooks = getAddressBooks();
 		
-		for(Map.Entry<String, ArrayList<String>> entry : contact.getAddressBookNameTypeMap().entrySet()) {
-			if(!addressBooks.contains(entry.getKey())) 
-				throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "The addressBook : "+entry.getKey()+" is not present");
+		try {
+			for(Map.Entry<String, ArrayList<String>> entry : contact.getAddressBookNameTypeMap().entrySet()) {
+				if(!addressBooks.contains(entry.getKey())) 
+					throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "The addressBook : "+entry.getKey()+" is not present");
+			}
+		}catch(Exception e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "Given empty map of addressBook name and types");
 		}
 		
 		try(Statement statement = connection.createStatement()){
