@@ -234,4 +234,19 @@ public class AddressBookTest {
 		}
 		
 	}
+	
+	@Test
+	public void givenAWorngContactData_WhenInserted_ShouldThrowCustomException()
+	{
+		AddressBook addressBook = new AddressBook();
+		try {
+			ExpectedException exceptionRule = ExpectedException.none();
+			exceptionRule.expect(AddressBookException.class);
+			addressBook.addPerson(person2, IOService.DB_IO);
+		}
+		catch( AddressBookException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
