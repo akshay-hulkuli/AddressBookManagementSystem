@@ -269,19 +269,20 @@ public class AddressBookDBService {
 		List<PersonDetails> contactList = new ArrayList<>();
 		try {
 			while(result.next()) {
-				PersonDetails person  = new PersonDetails();
-				person.setId(result.getInt("contact_id"));
-				person.setFirstName(result.getString("firstName"));
-				person.setLastName(result.getString("lastName"));
-				person.setAddress(result.getString("address"));
-				person.setCity(result.getString("city"));
-				person.setState(result.getString("state"));
-				person.setPinCode(result.getInt("zip"));
-				person.setPhoneNumber(result.getString("phoneNumber"));
-				person.setEmail(result.getString("email"));
-				person.setDateAdded(result.getDate("date_added").toLocalDate());
-				person.setAddressBookNameTypeMap(contactMap.get(result.getInt("contact_id")));
-				contactList.add(person);
+				Contacts contact = new Contacts();
+				Address address = new Address();
+				address.setContactId(result.getInt("contact_id"));
+				contact.setContactId(result.getInt("contact_id"));
+				contact.setFirstName(result.getString("firstName"));
+				contact.setLastName(result.getString("lastName"));
+				address.setAddress(result.getString("address"));
+				address.setCity(result.getString("city"));
+				address.setState(result.getString("state"));
+				address.setPinCode(result.getInt("zip"));
+				contact.setPhoneNumber(result.getString("phoneNumber"));
+				contact.setEmail(result.getString("email"));
+				contact.setDateAdded(result.getDate("date_added").toLocalDate());
+				contactList.add(new PersonDetails(contact,address,contactMap.get(result.getInt("contact_id"))));
 			}
 		}
 		catch(SQLException e) {
