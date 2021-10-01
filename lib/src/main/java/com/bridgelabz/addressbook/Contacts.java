@@ -9,6 +9,9 @@ public class Contacts {
 	private String phoneNumber;
 	private String email;
 	private LocalDate dateAdded;
+	private Address addressObj;
+	
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -44,6 +47,12 @@ public class Contacts {
 	}
 	public void setContactId(int contactId) {
 		this.contactId = contactId;
+	}
+	public Address getAddressObj() {
+		return addressObj;
+	}
+	public void setAddressObj(Address addressObj) {
+		this.addressObj = addressObj;
 	}
 	
 	
