@@ -25,6 +25,8 @@ public class AddressBookTest {
 	PersonDetails person2;
 	Contacts contact;
 	Address address;
+	
+	static int  sum =0;
 	@Before
 	public void initialize() {
 		
@@ -66,17 +68,17 @@ public class AddressBookTest {
 	
 	@Test
 	public void givenAContact_WhenAddedToList_ShouldReturnCorrectSize() {
-		AddressBook addressBook = new AddressBook();	
-		addressBook.addPerson(person1, IOService.LIST_DS_IO);
-		addressBook.addPerson(person2, IOService.LIST_DS_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
+		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
+		addressBook.addPerson(person2, IOServiceEnum.LIST_DS_IO);
 		Assert.assertEquals(2,addressBook.referenceBook.size());
 	}
 	
 	@Test
 	public void givenAContact_WhenAddedToFile_ShouldReturnCorectSize() {
-		AddressBook addressBook = new AddressBook();	
-		addressBook.addPerson(person1, IOService.TXT_FILE_IO);
-		addressBook.addPerson(person2, IOService.TXT_FILE_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
+		addressBook.addPerson(person1, IOServiceEnum.TXT_FILE_IO);
+		addressBook.addPerson(person2, IOServiceEnum.TXT_FILE_IO);
 		long size = 0;
 		try {
 			size = Files.lines(Paths.get("AddressBook-file.txt")).count();
@@ -89,27 +91,27 @@ public class AddressBookTest {
 	
 	@Test
 	public void whenCalled_ReadFromListMethod_ShouldPrintList() {
-		AddressBook addressBook = new AddressBook();	
-		addressBook.addPerson(person1, IOService.LIST_DS_IO);
-		addressBook.addPerson(person2, IOService.LIST_DS_IO);
-		long size  = addressBook.readData(IOService.LIST_DS_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
+		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
+		addressBook.addPerson(person2, IOServiceEnum.LIST_DS_IO);
+		long size  = addressBook.readData(IOServiceEnum.LIST_DS_IO);
 		Assert.assertEquals(2,size);
 	}
 	
 	@Test
 	public void whenCalled_ReadFromFileMethod_ShouldPrintFile() {
-		AddressBook addressBook = new AddressBook();	
-		addressBook.addPerson(person1, IOService.TXT_FILE_IO);
-		addressBook.addPerson(person2, IOService.TXT_FILE_IO);
-		long size  = addressBook.readData(IOService.TXT_FILE_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
+		addressBook.addPerson(person1, IOServiceEnum.TXT_FILE_IO);
+		addressBook.addPerson(person2, IOServiceEnum.TXT_FILE_IO);
+		long size  = addressBook.readData(IOServiceEnum.TXT_FILE_IO);
 		Assert.assertEquals(2,size);
 	}
 	
 	@Test
 	public void givenAContact_WhenAddedToCSVFile_ShouldReturnCorrectSize() {
-		AddressBook addressBook = new AddressBook();	
-		addressBook.addPerson(person1, IOService.CSV_IO);
-		addressBook.addPerson(person2, IOService.CSV_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
+		addressBook.addPerson(person1, IOServiceEnum.CSV_IO);
+		addressBook.addPerson(person2, IOServiceEnum.CSV_IO);
 		long size = 0;
 		try {
 			size = Files.lines(Paths.get("AddressBook-file.csv")).count();
@@ -122,18 +124,18 @@ public class AddressBookTest {
 	
 	@Test
 	public void whenCalled_ReadFromCSVMethod_ShouldPrintFile() {
-		AddressBook addressBook = new AddressBook();	
-		addressBook.addPerson(person1, IOService.CSV_IO);
-		addressBook.addPerson(person2, IOService.CSV_IO);
-		long size  = addressBook.readData(IOService.CSV_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
+		addressBook.addPerson(person1, IOServiceEnum.CSV_IO);
+		addressBook.addPerson(person2, IOServiceEnum.CSV_IO);
+		long size  = addressBook.readData(IOServiceEnum.CSV_IO);
 		Assert.assertEquals(2,size);
 	}
 	
 	@Test
 	public void givenAContact_WhenAddedToJSONFile_ShouldReturnCorrectSize() {
-		AddressBook addressBook = new AddressBook();	
-		addressBook.addPerson(person1, IOService.JSON_IO);
-		addressBook.addPerson(person2, IOService.JSON_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
+		addressBook.addPerson(person1, IOServiceEnum.JSON_IO);
+		addressBook.addPerson(person2, IOServiceEnum.JSON_IO);
 		long count =0;
 		try {
 			Gson gson = new Gson();
@@ -150,35 +152,35 @@ public class AddressBookTest {
 	
 	@Test
 	public void whenCalled_ReadFromJsonMethod_ShouldPrintFile() {
-		AddressBook addressBook = new AddressBook();	
-		addressBook.addPerson(person1, IOService.JSON_IO);
-		addressBook.addPerson(person2, IOService.JSON_IO);
-		long size  = addressBook.readData(IOService.JSON_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
+		addressBook.addPerson(person1, IOServiceEnum.JSON_IO);
+		addressBook.addPerson(person2, IOServiceEnum.JSON_IO);
+		long size  = addressBook.readData(IOServiceEnum.JSON_IO);
 		Assert.assertEquals(2,size);
 	}
 	
 	@Test
 	public void givenAddressBookInDB_WhenRetrived_ShouldReturnCount()
 	{
-		AddressBook addressBook = new AddressBook();
-		long count  = addressBook.readData(IOService.DB_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		long count  = addressBook.readData(IOServiceEnum.DB_IO);
 		Assert.assertEquals(6, count);
 	}
 	
 	@Test
 	public void givenAContact_WhenInserted_ShouldGetUpdatedSize()
 	{
-		AddressBook addressBook = new AddressBook();
-		long initialSize  = addressBook.readData(IOService.DB_IO);
-		addressBook.addPerson(person1, IOService.DB_IO);
-		long updatedSize = addressBook.readData(IOService.DB_IO);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		long initialSize  = addressBook.readData(IOServiceEnum.DB_IO);
+		addressBook.addPerson(person1, IOServiceEnum.DB_IO);
+		long updatedSize = addressBook.readData(IOServiceEnum.DB_IO);
 		Assert.assertEquals(initialSize+1, updatedSize);
 	}
 	
 	@Test
 	public void givenAAddressBookName_WhenInserted_ShouldReturnOne()
 	{
-		AddressBook addressBook = new AddressBook();
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
 		int result = addressBook.insertAddressBook("address_book3");
 		Assert.assertTrue(result==1);
 	}
@@ -186,26 +188,30 @@ public class AddressBookTest {
 	@Test
 	public void givenContactIdAndPhonenumber_WhenUpdated_shouldReturnOne()
 	{
-		AddressBook addressBook = new AddressBook();
-		addressBook.readData(IOService.DB_IO);
-		addressBook.updatePhonenumberOfContact("9823561236", 1);
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		addressBook.readData(IOServiceEnum.DB_IO);
+		addressBook.updatePhonenumberOfContact("4568561236", 1);
 		boolean result = addressBook.checkAddressBookInsyncWithDB(1);
 		Assert.assertTrue(result);
 	}
-	
+
 	@Test
 	public void givenDateRange_FindContactsAddedInThatRange_ShouldReturnCount() {
-		AddressBook addressBook = new AddressBook();
+		AddressBookServiceImpl addressBookService = new AddressBookServiceImpl();
 		String date1 = "2019-01-01";
 		String date2 = "2020-09-09";
-		List<PersonDetails> contactList = addressBook.getEmployeeInADateRange(date1,date2);
+		List<AddressBookData> contactList = addressBookService.getEmployeeInADateRange(date1,date2);
 		System.out.println(contactList);
-		Assert.assertEquals(3, contactList.size());
+		sum =0;
+		contactList.stream().forEach(addressBook -> {
+			addressBook.getContactList().stream().forEach(contact -> sum += contact==null?0:1);
+		});
+		Assert.assertEquals(3, sum);
 	}
 	
 	@Test
 	public void givenCity_FindContactsInThatCity_ShouldReturnCount() {
-		AddressBook addressBook = new AddressBook();
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
 		HashMap<String,ArrayList<String>> contactsByAddressBook = addressBook.getContactsByCity("Bengaluru");
 		System.out.println(contactsByAddressBook);
 		Assert.assertEquals(2, contactsByAddressBook.get("address_book1").size());
@@ -213,7 +219,7 @@ public class AddressBookTest {
 	
 	@Test
 	public void givenState_FindContactsInThatState_ShouldReturnCount() {
-		AddressBook addressBook = new AddressBook();
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
 		HashMap<String,ArrayList<String>> contactsByAddressBook = addressBook.getContactsByState("Maharashtra");
 		System.out.println(contactsByAddressBook);
 		Assert.assertEquals(2, (contactsByAddressBook.get("address_book1").size()+contactsByAddressBook.get("address_book2").size()));
@@ -222,7 +228,7 @@ public class AddressBookTest {
 	@Test
 	public void givenAWrongQuery_WhenExecuted_ShouldThrowCustomException()
 	{
-		AddressBookDBService databaseIO = AddressBookDBService.getInstance();
+		DBServiceProvider databaseIO = DBServiceProvider.getInstance();
 		String sql = "SELECT * FROM random_table";
 		try {
 			ExpectedException exceptionRule = ExpectedException.none();
@@ -238,11 +244,11 @@ public class AddressBookTest {
 	@Test
 	public void givenAWorngContactData_WhenInserted_ShouldThrowCustomException()
 	{
-		AddressBook addressBook = new AddressBook();
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
 		try {
 			ExpectedException exceptionRule = ExpectedException.none();
 			exceptionRule.expect(AddressBookException.class);
-			addressBook.addPerson(person2, IOService.DB_IO);
+			addressBook.addPerson(person2, IOServiceEnum.DB_IO);
 		}
 		catch( AddressBookException e) {
 			e.printStackTrace();
