@@ -1,15 +1,9 @@
 package com.bridgelabz.addressbook;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class AddressBookTest {
 	PersonDetails person1;
@@ -20,36 +14,21 @@ public class AddressBookTest {
 	static int  sum =0;
 	@Before
 	public void initialize() {
-		
-		contact = new Contacts();
-		contact.setFirstName("arun");
-		contact.setLastName("anand");
-		contact.setPhoneNumber("6352417895");
-		contact.setEmail("akshay@gmail.com");
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-		String date = "16/08/2019";
-		LocalDate date_added = LocalDate.parse(date, formatter);
-		contact.setDateAdded(date_added);
-		
-		address = new Address();
-		address.setAddress("hulkuli");
-		address.setCity("Thirathalli");
-		address.setState("karnataka");
-		address.setPinCode(577415);
-		
-		HashMap<String,ArrayList<String>> nameTypeMap = new HashMap<String, ArrayList<String>>();
-		nameTypeMap.put("address_book2", new ArrayList<String>(Arrays.asList("family")));
-		nameTypeMap.put("address_book1", new ArrayList<String>(Arrays.asList("profession")));
-		
-		person1 = new PersonDetails(contact, address, nameTypeMap);
-		
-		
+		person1  = new PersonDetails();
+		person1.setFirstName("akshay");
+		person1.setLastName("hulkuli");
+		person1.setAddress("hulkuli");
+		person1.setCity("Thirathalli");
+		person1.setState("karnataka");
+		person1.setPinCode(577415);
+		person1.setPhoneNumber("6352417895");
+		person1.setEmail("akshay@gmail.com");
 		
 		person2 = new PersonDetails();
 		person2.setFirstName("ankith");
 		person2.setLastName("Kumar");
 		person2.setAddress("padbhanabhanagar");
-		person2.setCity("bengalurur");
+		person2.setCity("bengaluru");
 		person2.setState("karnataka");
 		person2.setPinCode(560070);
 		person2.setPhoneNumber("6352417897");
@@ -66,18 +45,18 @@ public class AddressBookTest {
 	}
 	
 	@Test
-	public void givenAContact_WhenAddedToFile_ShouldReturnCorectSize() {
+	public void givenANullContact_WhenAddedToList_ShouldThrowError() {
 		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
-		addressBook.addPerson(person1, IOServiceEnum.TXT_FILE_IO);
-		addressBook.addPerson(person2, IOServiceEnum.TXT_FILE_IO);
-		long size = 0;
+		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
+		PersonDetails person3 = new PersonDetails();
 		try {
-			size = Files.lines(Paths.get("AddressBook-file.txt")).count();
+			addressBook.addPerson(person3, IOServiceEnum.LIST_DS_IO);
+			ExpectedException exceptionRule = ExpectedException.none();
+			exceptionRule.expect(AddressBookException.class);
 		}
-		catch(Exception e) {
+		catch(AddressBookException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(2,size);
 	}
 	
 	@Test
@@ -90,12 +69,36 @@ public class AddressBookTest {
 	}
 	
 	@Test
-	public void whenCalled_ReadFromFileMethod_ShouldPrintFile() {
-		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();	
-		addressBook.addPerson(person1, IOServiceEnum.TXT_FILE_IO);
-		addressBook.addPerson(person2, IOServiceEnum.TXT_FILE_IO);
-		long size  = addressBook.readData(IOServiceEnum.TXT_FILE_IO);
-		Assert.assertEquals(2,size);
+	public void whenCityIsGiven_ShouldReturnTheCount() {
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
+		addressBook.addPerson(person2, IOServiceEnum.LIST_DS_IO);
+		long count  = addressBook.countByCity("bengaluru", IOServiceEnum.LIST_DS_IO);
+		Assert.assertEquals(1,count);
+	}
+	
+	@Test
+	public void whenStateIsGiven_ShouldReturnTheCount() {
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
+		addressBook.addPerson(person2, IOServiceEnum.LIST_DS_IO);
+		long count  = addressBook.countByState("karnataka", IOServiceEnum.LIST_DS_IO);
+		Assert.assertEquals(2,count);
+	}
+	
+	@Test
+	public void whenNullValueForCityIsGiven_ShouldThrowException() {
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
+		addressBook.addPerson(person2, IOServiceEnum.LIST_DS_IO);
+		try {
+			long count  = addressBook.countByCity("bengaluru", IOServiceEnum.LIST_DS_IO);
+			ExpectedException exceptionRule = ExpectedException.none();
+			exceptionRule.expect(AddressBookException.class);
+		}
+		catch (AddressBookException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
