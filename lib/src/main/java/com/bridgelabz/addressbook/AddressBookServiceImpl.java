@@ -55,7 +55,8 @@ public class AddressBookServiceImpl implements AddressBookServiceIF {
 		}
 		else if(type.equals(IOServiceEnum.DB_IO)) {
 			DBServiceProvider databaseIO = addressBookDBService;
-			referenceBook.add(databaseIO.writeDB(person));
+			databaseIO.writeDB(person);
+			addressBookList = (ArrayList<AddressBookData>) databaseIO.readData();
 		}
 	}
 	
