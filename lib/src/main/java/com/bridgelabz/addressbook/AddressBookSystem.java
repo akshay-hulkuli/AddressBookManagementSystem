@@ -3,7 +3,7 @@ package com.bridgelabz.addressbook;
 import java.util.*;
 import java.util.Scanner;
 public class AddressBookSystem {
-	public static List<AddressBook> addressBooks = new LinkedList<AddressBook>();
+	public static List<AddressBookServiceImpl> addressBooks = new LinkedList<AddressBookServiceImpl>();
 	public static String[] addressBookName = new String[10];
 	
 	
@@ -14,7 +14,7 @@ public class AddressBookSystem {
 		return false;
 	}
 	
-	public void addressMenu(AddressBook addressBook) {
+	public void addressMenu(AddressBookServiceImpl addressBook) {
 		Scanner sc = new Scanner(System.in);
 		int option = 0;
 		boolean exit = true;
@@ -27,16 +27,16 @@ public class AddressBookSystem {
 					System.out.println(" select 1: add to list 2: add to txt file 3: add to csv file  4: add to json file");
 					switch(sc.nextInt()) {
 						case 1:
-							addressBook.addPerson(person, IOService.LIST_DS_IO);
+							addressBook.addPerson(person, IOServiceEnum.LIST_DS_IO);
 							break;
 						case 2:
-							addressBook.addPerson(person, IOService.TXT_FILE_IO);
+							addressBook.addPerson(person, IOServiceEnum.TXT_FILE_IO);
 							break;
 						case 3:
-							addressBook.addPerson(person, IOService.CSV_IO);
+							addressBook.addPerson(person, IOServiceEnum.CSV_IO);
 							break;
 						case 4:
-							addressBook.addPerson(person, IOService.JSON_IO);
+							addressBook.addPerson(person, IOServiceEnum.JSON_IO);
 							break;
 					}
 					
@@ -49,16 +49,16 @@ public class AddressBookSystem {
 					System.out.println(" select 1: display from list 2: display from txt file 3: display from CSV file 4: display from json file");
 					switch(sc.nextInt()) {
 						case 1:
-							addressBook.readData(IOService.LIST_DS_IO);
+							addressBook.readData(IOServiceEnum.LIST_DS_IO);
 							break;
 						case 2:
-							addressBook.readData(IOService.TXT_FILE_IO);
+							addressBook.readData(IOServiceEnum.TXT_FILE_IO);
 							break;
 						case 3:
-							addressBook.readData(IOService.CSV_IO);
+							addressBook.readData(IOServiceEnum.CSV_IO);
 							break;
 						case 4:
-							addressBook.readData(IOService.JSON_IO);
+							addressBook.readData(IOServiceEnum.JSON_IO);
 							break;
 					}
 					break;
@@ -126,14 +126,14 @@ public class AddressBookSystem {
 	public void countByCity(String city) {
 		int count =0;
 		for(int i=0;i<addressBooks.size();i++) {
-			count+= addressBooks.get(i).countByCity(city, IOService.LIST_DS_IO);
+			count+= addressBooks.get(i).countByCity(city, IOServiceEnum.LIST_DS_IO);
 		}
 		System.out.println("the number person in city : "+city+" is : "+count);
 	}
 	public void countByState(String State) {
 		int count =0;
 		for(int i=0;i<addressBooks.size();i++) {
-			count+= addressBooks.get(i).countByState(State,IOService.LIST_DS_IO);
+			count+= addressBooks.get(i).countByState(State,IOServiceEnum.LIST_DS_IO);
 		}
 		System.out.println("the number person in city : "+State+" is : "+count);
 	}
