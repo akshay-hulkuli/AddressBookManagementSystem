@@ -11,7 +11,7 @@ public class AddressBookMain {
 		System.out.println("****** Welcome to address book program ! ******");
 		Scanner sc = new Scanner(System.in);
 		
-		AddressBook currentBook;
+		AddressBookServiceImpl currentBook;
 		boolean exit1 = true;
 		while(exit1) {
 			System.out.println("Select option 1:Add address Book 2:open Address Book 3:search by city or state  4 : display users in city or state 5: count by city or state 6:exit");
@@ -19,7 +19,7 @@ public class AddressBookMain {
 				case 1: 
 					System.out.println("Enter the address book name");
 					String name = sc.next();
-					currentBook  = new AddressBook();
+					currentBook  = new AddressBookServiceImpl();
 					addressBookSystem.addressBooks.add(currentBook);
 					addressBookSystem.addressBookName[numOfBooks] = name;
 					numOfBooks++;
