@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 
 
 public class AddressBookServiceImpl implements AddressBookServiceIF {
-	public static String CSV_FILE_NAME = "AddressBook-file.csv";
-	public static String TXT_FILE_NAME = "AddressBook-file.txt";
-	public static String JSON_FILE_NAME = "AddressBook-file.json";
+	public final static String CSV_FILE_NAME = "AddressBook-file.csv";
+	public final static String TXT_FILE_NAME = "AddressBook-file.txt";
+	public final static String JSON_FILE_NAME = "AddressBook-file.json";
 	public static ArrayList<PersonDetails> referenceBook; 
 	public static ArrayList<AddressBookData> addressBookList;
 	public  HashMap<String, ArrayList<PersonDetails>> personsByCity = new HashMap<String, ArrayList<PersonDetails>>();
@@ -28,6 +28,7 @@ public class AddressBookServiceImpl implements AddressBookServiceIF {
 	
 	public void addPerson(PersonDetails person , IOServiceEnum type) {
 		if(type.equals(IOServiceEnum.LIST_DS_IO)) {
+			try {
 			boolean isDuplicate = referenceBook.stream().anyMatch(contact -> person.equals(contact));
 			if(isDuplicate) {
 				System.out.println("Duplicate data entry. discarded");
@@ -38,6 +39,10 @@ public class AddressBookServiceImpl implements AddressBookServiceIF {
 				personsByCity.get(person.getCity()).add(person);
 				if(personsByState.get(person.getState()) == null) personsByState.put(person.getState(), new ArrayList<>());
 				personsByState.get(person.getState()).add(person);
+			}
+			}
+			catch(NullPointerException e) {
+				throw new AddressBookException(AddressBookException.ExceptionType.NULL_CONTACT_OBJECT, "contact object is empty");
 			}
 		}
 		else if(type.equals(IOServiceEnum.TXT_FILE_IO)){
@@ -118,7 +123,12 @@ public class AddressBookServiceImpl implements AddressBookServiceIF {
 	}
 	
 	public int countByCity(String city, IOServiceEnum type) {
-		return (personsByCity.get(city)==null)?0:personsByCity.get(city).size();
+		try {
+			return (personsByCity.get(city)==null)?0:personsByCity.get(city).size();
+		}
+		catch (NullPointerException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.NULL_CONTACT_OBJECT, "null value is passed");
+		}
 	}
 	public int countByState(String state, IOServiceEnum type) {
 		return personsByState.get(state)==null?0:personsByState.get(state).size();
