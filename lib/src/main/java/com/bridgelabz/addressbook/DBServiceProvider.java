@@ -46,9 +46,9 @@ public class DBServiceProvider {
 	
 	}
 	
-	public List<PersonDetails> readData() {
+	public List<AddressBookData> readData() {
 		String sql = "SELECT * FROM address a , contacts c WHERE a.contact_id = c.contact_id";
-		List<PersonDetails> contactList = new ArrayList<>();
+		List<AddressBookData> contactList = new ArrayList<>();
 		try {
 			Connection connection = this.getConnection();
 			Statement statement = connection.createStatement();
@@ -251,9 +251,9 @@ public class DBServiceProvider {
 		}
 	}
 	
-	public List<PersonDetails> getAddressBookData(int id ){
+	public List<AddressBookData> getAddressBookData(int id ){
 		String sql = String.format("SELECT * FROM address a , contacts c WHERE a.contact_id = c.contact_id and c.contact_id = %d",id);
-		List<PersonDetails> contactList = null;
+		List<AddressBookData> contactList = null;
 		try {
 			Connection connection = this.getConnection();
 			Statement statement = connection.createStatement();
@@ -267,10 +267,10 @@ public class DBServiceProvider {
 		return contactList;
 	}
 	
-	public List<PersonDetails> getAddressBookData(ResultSet result){
-		
-		HashMap<Integer, HashMap<String,ArrayList<String>>> contactMap = getContactMap(); 
-		List<PersonDetails> contactList = new ArrayList<>();
+	
+	public List<AddressBookData> getAddressBookData(ResultSet result){
+		List<AddressBookData> addressBookDataList = new ArrayList<AddressBookData>();
+		HashMap<Integer,Contacts> contactList = new HashMap<>();
 		try {
 			while(result.next()) {
 				Contacts contact = new Contacts();
@@ -286,13 +286,41 @@ public class DBServiceProvider {
 				contact.setPhoneNumber(result.getString("phoneNumber"));
 				contact.setEmail(result.getString("email"));
 				contact.setDateAdded(result.getDate("date_added").toLocalDate());
-				contactList.add(new PersonDetails(contact,address,contactMap.get(result.getInt("contact_id"))));
+				contact.setAddressObj(address);
+				contactList.put(contact.getContactId(),contact);
 			}
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
 		}
-		return contactList;
+		HashMap<String, HashMap<String,ArrayList<Contacts>>> nameTypeContactMapper = getAddressBookAndTypes(contactList); 
+		for(Map.Entry<String, HashMap<String,ArrayList<Contacts>>> entry : nameTypeContactMapper.entrySet()) {
+			for(Map.Entry<String,ArrayList<Contacts>> innerEntry : entry.getValue().entrySet()) {
+				addressBookDataList.add(new AddressBookData(entry.getKey(), innerEntry.getKey(), innerEntry.getValue()));
+			}
+		}
+		return addressBookDataList;
+	}
+	
+	private HashMap<String, HashMap<String,ArrayList<Contacts>>> getAddressBookAndTypes(HashMap<Integer,Contacts> contactMap){
+		String sql = "select * from addressBook_type;";
+		HashMap<String, HashMap<String,ArrayList<Contacts>>> nameTypeContactMapper = new HashMap<>();
+		try(Connection connection  = this.getConnection();){
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while(resultSet.next()) {
+				String addressBookName = resultSet.getString(1);
+				String addressBookType = resultSet.getString(2);
+				int contact_id = resultSet.getInt(3);
+				if(nameTypeContactMapper.get(addressBookName) == null) nameTypeContactMapper.put(addressBookName,new HashMap<String, ArrayList<Contacts>>());
+				if(nameTypeContactMapper.get(addressBookName).get(addressBookType) == null) nameTypeContactMapper.get(addressBookName).put(addressBookType, new ArrayList<>());
+				nameTypeContactMapper.get(addressBookName).get(addressBookType).add(contactMap.get(contact_id));
+			}
+		}
+		catch(SQLException e) {
+			throw new AddressBookException(AddressBookException.ExceptionType.CANNOT_EXECUTE_QUERY, "cannot execute the query");
+		}
+		return nameTypeContactMapper;
 	}
 	
 	public void demoQuery(String sql) {
@@ -307,10 +335,10 @@ public class DBServiceProvider {
 		}
 	}
 	
-	public List<PersonDetails> getEmployeeInADateRange(String date1, String date2){
+	public List<AddressBookData> getEmployeeInADateRange(String date1, String date2){
 		String sql = String.format("select * from contacts c , address a where c.contact_id = a.contact_id and date_added between cast('%s' as date) and "
 				+ "cast('%s' as date);",date1,date2);
-		List<PersonDetails> contactList = new ArrayList<>();
+		List<AddressBookData> contactList = new ArrayList<>();
 		try(Connection connection = this.getConnection();){
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
