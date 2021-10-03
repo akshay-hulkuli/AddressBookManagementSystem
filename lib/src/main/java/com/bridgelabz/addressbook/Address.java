@@ -36,6 +36,12 @@ public class Address {
 	public void setContactId(int contactId) {
 		this.contactId = contactId;
 	}
-	
+	@Override
+    public boolean equals(Object object) {
+    	if(object == this)  return true;
+    	if(!(object instanceof Address)) return false;
+    	Address that = (Address) object;
+    	return (this.address.equals(that.address) && this.state.equals(that.state) && this.city.equals(that.city) && this.pinCode == that.pinCode);
+    }
 	
 }
