@@ -14,6 +14,7 @@ public class AddressBookServiceImpl implements AddressBookServiceIF {
 	public static String TXT_FILE_NAME = "AddressBook-file.txt";
 	public static String JSON_FILE_NAME = "AddressBook-file.json";
 	public static ArrayList<PersonDetails> referenceBook; 
+	public static ArrayList<AddressBookData> addressBookList;
 	public  HashMap<String, ArrayList<PersonDetails>> personsByCity = new HashMap<String, ArrayList<PersonDetails>>();
 	public  HashMap<String, ArrayList<PersonDetails>> personsByState = new HashMap<String, ArrayList<PersonDetails>>();
 	private int numOfContacts = 0;
@@ -81,14 +82,20 @@ public class AddressBookServiceImpl implements AddressBookServiceIF {
 		}
 		else if(type.equals(IOServiceEnum.DB_IO)) {
 			DBServiceProvider databaseIO = addressBookDBService;
-			referenceBook = (ArrayList<PersonDetails>) databaseIO.readData();
-			System.out.println(referenceBook);
-			return referenceBook.size();
+			addressBookList = (ArrayList<AddressBookData>) databaseIO.readData();
+			System.out.println(addressBookList);
+			return getNumberOfContacts(addressBookList);
 		}
 		return count;
 	}
 	
 	
+	private int getNumberOfContacts(ArrayList<AddressBookData> addressBookList) {
+		int size = 0;
+		for(AddressBookData addressBook : addressBookList) size += addressBook.getContactList().size();
+		return size;
+	}
+
 	public void searchByCity(String city,String firstName) {
 		Predicate<PersonDetails> searchPerson = (contact -> contact.getCity().equals(city)&& contact.getFirstName().equals(firstName));
 		referenceBook.stream().filter(searchPerson).forEach(person -> output(person));
@@ -252,22 +259,32 @@ public class AddressBookServiceImpl implements AddressBookServiceIF {
 	public void updatePhonenumberOfContact(String phoneNumber, int id) {
 		int result =  addressBookDBService.updatePhonenumberOfContact(phoneNumber, id);
 		if( result == 0) return;
-		PersonDetails contact = this.getPersonDetailsData(id);
+		Contacts contact = this.getPersonDetailsData(id);
 		if( contact != null) contact.setPhoneNumber(phoneNumber);
 	}
 	public boolean checkAddressBookInsyncWithDB(int id) {
-		List<PersonDetails> employeePayrollDataList =  addressBookDBService.getAddressBookData(id);
-		return employeePayrollDataList.get(0).equals(getPersonDetailsData(id));
+		List<AddressBookData> employeePayrollDataList =  addressBookDBService.readData();
+		Contacts localContacts = getPersonDetailsData(id);
+		for(AddressBookData addressBook : employeePayrollDataList) {
+			for(Contacts contact : addressBook.getContactList()) {
+				if(contact.equals(localContacts)) return true;
+			}
+		}
+		return false;
 	}
 	
-	private PersonDetails getPersonDetailsData(int id) {
-		return referenceBook.stream()
-					 .filter(contact -> contact.getId() == id)
-					 .findFirst()
-					 .orElse(null);
+	private Contacts getPersonDetailsData(int id) {
+		for(AddressBookData addressBook : addressBookList) {
+			for(Contacts contact : addressBook.getContactList()) {
+				if(contact.getContactId() == id) {
+					return contact;
+				}
+			}
+		}
+		return null;
 	}
 
-	public List<PersonDetails> getEmployeeInADateRange(String date1, String date2) {
+	public List<AddressBookData> getEmployeeInADateRange(String date1, String date2) {
 		
 		return addressBookDBService.getEmployeeInADateRange(date1,date2);
 	}
