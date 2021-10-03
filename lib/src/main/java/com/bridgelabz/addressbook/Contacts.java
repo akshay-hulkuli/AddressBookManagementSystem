@@ -55,5 +55,12 @@ public class Contacts {
 		this.addressObj = addressObj;
 	}
 	
-	
+	@Override
+    public boolean equals(Object object) {
+    	if(object == this)  return true;
+    	if(!(object instanceof Contacts)) return false;
+    	Contacts that = (Contacts) object;
+    	return (this.firstName.equals(that.firstName) && this.lastName.equals(that.lastName) && this.phoneNumber.equals(that.phoneNumber) && 
+    			this.email.equals(that.email) && this.addressObj.equals(that.addressObj));
+    }
 }
