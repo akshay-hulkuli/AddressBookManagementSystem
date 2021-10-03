@@ -149,4 +149,19 @@ public class AddressBookDBTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void givenAContactWithWrongBookName_WhenInserted_ShouldGetUpdatedSize()
+	{
+		person1.getAddressBookNameTypeMap().put("address_book5", new ArrayList<String>(Arrays.asList("profession")));
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		try {
+			addressBook.addPerson(person1, IOServiceEnum.DB_IO);
+			ExpectedException exceptionRule = ExpectedException.none();
+			exceptionRule.expect(AddressBookException.class);
+		}
+		catch (AddressBookException e) {
+			e.printStackTrace();
+		}
+	}
 }
