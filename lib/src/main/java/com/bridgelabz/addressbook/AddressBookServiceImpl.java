@@ -102,14 +102,24 @@ public class AddressBookServiceImpl implements AddressBookServiceIF {
 		return size;
 	}
 
-	public void searchByCity(String city,String firstName) {
+	public long searchByCity(String city,String firstName) {
+		count =0;
 		Predicate<PersonDetails> searchPerson = (contact -> contact.getCity().equals(city)&& contact.getFirstName().equals(firstName));
-		referenceBook.stream().filter(searchPerson).forEach(person -> output(person));
+		referenceBook.stream().filter(searchPerson).forEach(person -> {
+			count++;
+			output(person);
+		});
+		return count;
 	}
 	
-	public void searchByState(String state, String firstName) {
+	public long searchByState(String state, String firstName) {
+		count  =0;
 		Predicate<PersonDetails> searchPerson = (contact -> contact.getState().equals(state)&& contact.getFirstName().equals(firstName));
-		referenceBook.stream().filter(searchPerson).forEach(person -> output(person));
+		referenceBook.stream().filter(searchPerson).forEach(person -> {
+			count++;
+			output(person);
+		});
+		return count;
 	}
 	
 	public void personsInCity(String city) {
