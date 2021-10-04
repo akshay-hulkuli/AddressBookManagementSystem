@@ -87,6 +87,24 @@ public class AddressBookTest {
 	}
 	
 	@Test
+	public void whenStateAndPersonNameIsGiven_ShouldReturnTheCount() {
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
+		addressBook.addPerson(person2, IOServiceEnum.LIST_DS_IO);
+		long count  = addressBook.searchByState("karnataka","akshay");
+		Assert.assertEquals(1,count);
+	}
+	
+	@Test
+	public void whenCityAndPersonNameIsGiven_ShouldReturnTheCount() {
+		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
+		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
+		addressBook.addPerson(person2, IOServiceEnum.LIST_DS_IO);
+		long count  = addressBook.searchByState("Bengaluru","ananth");
+		Assert.assertEquals(0,count);
+	}
+	
+	@Test
 	public void whenNullValueForCityIsGiven_ShouldThrowException() {
 		AddressBookServiceImpl addressBook = new AddressBookServiceImpl();
 		addressBook.addPerson(person1, IOServiceEnum.LIST_DS_IO);
