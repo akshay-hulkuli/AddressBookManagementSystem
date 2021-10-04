@@ -3,8 +3,8 @@ package com.bridgelabz.addressbook;
 public interface AddressBookServiceIF {
 	public void addPerson(PersonDetails person , IOServiceEnum type);
 	public long readData(IOServiceEnum type);
-	public void searchByCity(String city,String firstName);
-	public void searchByState(String state, String firstName);
+	public long searchByCity(String city,String firstName);
+	public long searchByState(String state, String firstName);
 	public void personsInCity(String city);
 	public void personsInState(String State);
 	public int countByCity(String city, IOServiceEnum type);
