@@ -1,11 +1,13 @@
 
 package com.bridgelabz.addressbook;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.opencsv.bean.CsvBindByName;
+import com.bridgelabz.dto.Contacts;
+import com.bridgelabz.dto.Address;
+
 
 public class PersonDetails {
 	private int id;
@@ -31,7 +33,6 @@ public class PersonDetails {
     public PersonDetails() {}
     
     public PersonDetails( Contacts contact, Address address, HashMap<String, ArrayList<String>> addressBookNameTypeMap) {
-    	this.id = contact.getContactId();
     	this.firstName = contact.getFirstName();
     	this.lastName = contact.getLastName();
     	this.address = address.getAddress();
